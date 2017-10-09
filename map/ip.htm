@@ -1,0 +1,62 @@
+<html>
+
+
+<body>
+
+<p>
+address: 							<span id="jaddress"></span><br />
+content_address: 					<span id="jcontent_address"></span><br />
+content_address_detail_city: 		<span id="jcontent_address_detail_city"></span><br />
+content_address_detail_city_code:	<span id="jcontent_address_detail_city_code"></span><br />
+content_address_detail_district:	<span id="jcontent_address_detail_district"></span><br />
+content_address_detail_province:	<span id="jcontent_address_detail_province"></span><br />
+content_address_detail_street:		<span id="jcontent_address_detail_street"></span><br />
+content_point_point_x:				<span id="jcontent_point_point_x"></span><br />
+content_point_point_y:				<span id="jcontent_point_point_y"></span><br />
+status:								<span id="jstatus"></span><br />
+</p>
+
+<script language="javascript" type="text/javascript">
+
+function load_script(xyUrl){
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = xyUrl;
+    //借鉴了jQuery的script跨域方法
+    script.onload = script.onreadystatechange = function(){
+        if((!this.readyState || this.readyState === "loaded" || this.readyState === "complete")){
+            callback && callback();
+            // Handle memory leak in IE
+            script.onload = script.onreadystatechange = null;
+            if ( head && script.parentNode ) {
+                head.removeChild( script );
+            }
+        }
+    };
+    // Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+    head.insertBefore( script, head.firstChild );
+}
+
+var ip = "<?php echo $_SERVER['REMOTE_ADDR']; ?>";
+var url = "http://api.map.baidu.com/location/ip?ak=sDyHwPiy2iq5YMuwnZ7gVIvu&ip=" + ip + "&coor=bd09ll";
+var src = load_script(url);
+alert(src);
+var JSONObject = eval(src);
+
+document.getElementById("jaddress").innerHTML							= JSONObject.address;
+document.getElementById("jcontent_address").innerHTML					= JSONObject.content.address;
+document.getElementById("jcontent_address_detail_city").innerHTML		= JSONObject.content.address.detail.city;
+document.getElementById("jcontent_address_detail_city_code").innerHTML	= JSONObject.content.address.detail.city_code;
+document.getElementById("jcontent_address_detail_district").innerHTML	= JSONObject.content.address.detail.district;
+document.getElementById("jcontent_address_detail_province").innerHTML	= JSONObject.content.address.detail.province;
+document.getElementById("jcontent_address_detail_street").innerHTML		= JSONObject.content.address.detail.street;
+document.getElementById("jcontent_point_point_x").innerHTML				= JSONObject.content.point.point.x;
+document.getElementById("jcontent_point_point_y").innerHTML				= JSONObject.content.point.point.y;
+document.getElementById("jstatus").innerHTML							= JSONObject.status;
+
+</script>
+
+
+</body>
+</html>
