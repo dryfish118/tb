@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>登录</title>
-<?php require_once("conn.php") ?>
 </head>
+<?php include("conn.php"); ?>
 <frameset rows="80,*">
 	<frame src="./nav.htm" noresize="noresize" />
 	<frame src="./user.htm" name="showquery" />

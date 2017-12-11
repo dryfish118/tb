@@ -21,7 +21,7 @@
     {
         var $m_items = array();
         
-        function CBrandSet()
+        function __construct()
         {
             $i = 0;
             $sql = "select * from brand order by brand_id desc";
@@ -46,7 +46,7 @@
     {
         var $m_items = array();
         
-        function CCat1Set()
+        function __construct()
         {
             $i = 0;
             $sql = "select * from cat1";
@@ -72,7 +72,7 @@
     {
         var $m_items = array();
         
-        function CCat2Set()
+        function __construct()
         {
             $i = 0;
             $sql = "select cat1_name, cat2_id, cat2_name from cat1 inner join "
@@ -98,7 +98,7 @@
     {
         var $m_items = array();
         
-        function CTypeSet()
+        function __construct()
         {
             $i = 0;
             $sql = "select distinct(goods_type) as type from goods order by type";

@@ -2,7 +2,7 @@
 <?php
 	class CSizeSet extends COrderDataMgr
 	{
-		function CSizeSet()
+		function __construct()
 		{
 			$i = 0;
 			$sql = "select * from size order by size_order";

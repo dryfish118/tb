@@ -2,7 +2,7 @@
 <?php
 class CColorSet extends COrderDataMgr
 {
-	function CColorSet()
+	function __construct()
 	{
 		$i = 0;
 		$sql = "select * from color order by color_order";
