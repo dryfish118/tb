@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+div#navfirst {
+    height: 24px;
+    margin: 0 0 0 0;
+    padding: 0;
+    border: 0;
+}
+
+div#navfirst ul#menu {
+    position: relative;
+}
+
+div#navfirst ul#menu li {
+    list-style: none;
+    position: absolute;
+}
+
+#user {
+    left: 0;
+    width: 40px;
+}
+
+#issue {
+    left: 40px;
+    width: 40px;
+}
+
+#flow {
+    left: 80px;
+    width: 40px;
+}
+
+#brand {
+    left: 120px;
+    width: 40px;
+}
+
+#cat {
+    left: 160px;
+    width: 40px;
+}
+
+#size {
+    left: 200px;
+    width: 40px;
+}
+
+#color {
+    left: 240px;
+    width: 40px;
+}
+
+#client {
+    left: 280px;
+    width: 40px;
+}
+
+#goods {
+    left: 320px;
+    width: 40px;
+}
+
+#stock {
+    left: 360px;
+    width: 40px;
+}
+
+#sell {
+    left: 400px;
+    width: 40px;
+}
+
+#querystock {
+    left: 440px;
+    width: 40px;
+}
+
+#queryreserve {
+    left: 480px;
+    width: 80px;
+}
+
+#queryincome {
+    left: 560px;
+    width: 40px;
+}
+
+#querysell {
+    left: 600px;
+    width: 80px;
+}
+
+#sendip {
+    left: 680px;
+    width: 40px;
+}
+
+#history {
+    left: 720px;
+    width: 40px;
+}
+
+#diary {
+    left: 760px;
+    width: 40px;
+}
+
+#login {
+    left: 800px;
+    width: 40px;
+}
+
+div#maincontent {
+    float: left;
+    width: 850px;
+}
