@@ -1,14 +1,8 @@
 ﻿<?php
-	$fout = isset($_GET["fout"]) ? $_GET["fout"] : 0;
+	$fout = isset($_POST["fout"]) ? $_POST["fout"] : 0;
 	$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
-?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Language" content="zh-cn" />
-<title>登录</title>
-<?php
+	$redirect = 0;
+
 	if ($fout == 1)
 	{
 		setcookie("user", "", time());
@@ -20,26 +14,30 @@
 		{
 			die($conn->connect_error);
 		}
+		mysqli_query($conn, "set names utf8");
 		$sql = "select * from user where user_name like '" . $fname . "'";
-		$rs = $conn->query($sql);
-		if ($rs->num_rows > 0)
+		if ($result = $conn->query($sql))
 		{
-			$row = $rs->fetch_assoc();
-			if ($row)
+			if ($row = $result->fetch_row())
 			{
-				setcookie("user", $row["user_id"], time() + 60 * 60 * 24 * 365);
-				echo "<script type=\"text/javascript\">document.location.href=\"./dxx.php\";</script>";
+				setcookie("user", $row[0], time() + 60 * 60 * 24 * 365);
+				$redirect = 1;
 			}
-			else
-			{
-				die($conn->connect_error);
-			}
-		}
-		else
-		{
-			echo("failed to login.   " . $sql);
+			$result->free();
 		}
 		$conn->close();
+	}
+?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-cn" />
+<title>登录</title>
+<?php
+	if ($redirect == 1)
+	{
+		echo "<script type=\"text/javascript\">document.location.href=\"./dxx.php\";</script>";
 	}
 ?>
 </head>
