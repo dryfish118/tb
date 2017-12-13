@@ -68,61 +68,60 @@ div#navfirst ul#menu li {
 }
 
 #goods {
-    left: 320px;
+    left: 340px;
     width: 40px;
 }
 
 #stock {
-    left: 360px;
+    left: 380px;
     width: 40px;
 }
 
 #sell {
-    left: 400px;
+    left: 420px;
     width: 40px;
 }
 
 #querystock {
-    left: 440px;
-    width: 40px;
+    left: 480px;
+    width: 70px;
 }
 
 #queryreserve {
-    left: 480px;
-    width: 80px;
+    left: 550px;
+    width: 70px;
 }
 
 #queryincome {
-    left: 560px;
-    width: 40px;
+    left: 620px;
+    width: 70px;
 }
 
 #querysell {
-    left: 600px;
-    width: 80px;
+    left: 690px;
+    width: 70px;
 }
 
 #sendip {
-    left: 680px;
+    left: 780px;
     width: 40px;
 }
 
 #history {
-    left: 720px;
+    left: 820px;
     width: 40px;
 }
 
 #diary {
-    left: 760px;
+    left: 860px;
     width: 40px;
 }
 
 #login {
-    left: 800px;
+    left: 900px;
     width: 40px;
 }
 
 div#maincontent {
     float: left;
-    width: 850px;
 }

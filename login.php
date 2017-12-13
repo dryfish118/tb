@@ -16,14 +16,14 @@
 		}
 		mysqli_query($conn, "set names utf8");
 		$sql = "select * from user where user_name like '" . $fname . "'";
-		if ($result = $conn->query($sql))
+		if ($rs = $conn->query($sql))
 		{
-			if ($row = $result->fetch_row())
+			if ($row = $rs->fetch_assoc())
 			{
-				setcookie("user", $row[0], time() + 60 * 60 * 24 * 365);
+				setcookie("user", $row["user_id"], time() + 60 * 60 * 24 * 365);
 				$redirect = 1;
 			}
-			$result->free();
+			$rs->free();
 		}
 		$conn->close();
 	}
@@ -37,7 +37,7 @@
 <?php
 	if ($redirect == 1)
 	{
-		echo "<script type=\"text/javascript\">document.location.href=\"./dxx.php\";</script>";
+		echo "<script type=\"text/javascript\">document.location.href=\"./query_reserve.php\";</script>";
 	}
 ?>
 </head>

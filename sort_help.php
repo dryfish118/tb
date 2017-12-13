@@ -9,11 +9,15 @@
     {
 	    $sql = "select fld_sort_id, fld_value from tbl_sort where fld_user_id = " 
 			. $_COOKIE["user"] . " and fld_table_name = '$page'";
-        $rs = mysql_query($sql);
+        $rs = $conn->query($sql);
 		$sort_string = "";
-        if ($rs && $row = mysql_fetch_array($rs))
+        if ($rs)
         {
-			$sort_string = $row["fld_value"];
+			if ($row = $rs->fetch_assoc())
+			{
+				$sort_string = $row["fld_value"];
+			}
+			$rs->free();
 		}
 		
 		if ($sort_string == "")
@@ -28,7 +32,7 @@
             }
             $sql = "insert into tbl_sort(fld_user_id, fld_table_name, fld_value) values('" 
 				. $_COOKIE["user"] . "', '$page', '$sort_string')";
-        	mysql_query($sql);
+			$conn->query($sql);
 		}
         
 		return explode(";", $sort_string);

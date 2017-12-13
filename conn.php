@@ -10,6 +10,8 @@
     {
         die($conn->connect_error);
     }
+    mysqli_query($conn, "set names utf8");
+    
     function addHistory($action, $table, $contents)
     {
         // $sql = "insert into history(history_user_id,history_action,history_table,history_contents) "

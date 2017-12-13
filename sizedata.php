@@ -6,10 +6,10 @@
 		{
 			$i = 0;
 			$sql = "select * from size order by size_order";
-			$rs = mysql_query($sql);
+			$rs = $conn->query($sql);
 			if ($rs)
 			{
-				while ($row = mysql_fetch_array($rs))
+				while ($row = $rs->fetch_assoc())
 				{
 					$this->m_items[$i] = new COrderData;
 					$this->m_items[$i]->id = $row["size_id"];
@@ -17,6 +17,7 @@
 					$this->m_items[$i]->order = $row["size_order"];
 					$i++;
 				}
+				$rs->free();
 			}
 		}
 	}

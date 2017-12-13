@@ -1,5 +1,9 @@
 ﻿<?php require_once("colordata.php") ?>
 <?php require_once("sizedata.php") ?>
+<?php require_once("brandset.php") ?>
+<?php require_once("cat1set.php") ?>
+<?php require_once("cat2set.php") ?>
+<?php require_once("typeset.php") ?>
 <?php
     $showall = (isset($_POST["fshowall"]) && ($_POST["fshowall"] == "on")) ? true : false;
     $goods = isset($_POST["fgoods"]) ? $_POST["fgoods"] : 0;
@@ -10,107 +14,6 @@
     $color = isset($_POST["fcolor"]) ? $_POST["fcolor"] : 0;
     $size = isset($_POST["fsize"]) ? $_POST["fsize"] : 0;
     $curpage = isset($_POST["fcurpage"]) ? $_POST["fcurpage"] : 0;
-    
-    class CBrandData
-    {
-        var $id;
-        var $name;
-    }
-    
-    class CBrandSet
-    {
-        var $m_items = array();
-        
-        function __construct()
-        {
-            $i = 0;
-            $sql = "select * from brand order by brand_id desc";
-            $rs = mysql_query($sql);
-            while ($row = mysql_fetch_array($rs))
-            {
-                $this->m_items[$i] = new CBrandData;
-                $this->m_items[$i]->id = $row["brand_id"];
-                $this->m_items[$i]->name = $row["brand_name"];
-                $i++;
-            }
-        }
-    }
-    
-    class CCat1Data
-    {
-        var $id;
-        var $name;
-    }
-    
-    class CCat1Set
-    {
-        var $m_items = array();
-        
-        function __construct()
-        {
-            $i = 0;
-            $sql = "select * from cat1";
-            $rs = mysql_query($sql);
-            while ($row = mysql_fetch_array($rs))
-            {
-                $this->m_items[$i] = new CCat1Data;
-                $this->m_items[$i]->id = $row["cat1_id"];
-                $this->m_items[$i]->name = $row["cat1_name"];
-                $i++;
-            }
-        }
-    }
-    
-    class CCat2Data
-    {
-        var $id;
-        var $name;
-        var $cat1;
-    }
-    
-    class CCat2Set
-    {
-        var $m_items = array();
-        
-        function __construct()
-        {
-            $i = 0;
-            $sql = "select cat1_name, cat2_id, cat2_name from cat1 inner join "
-            ."cat2 on cat1.cat1_id = cat2.cat2_cat1_id";
-            $rs = mysql_query($sql);
-            while ($row = mysql_fetch_array($rs))
-            {
-                $this->m_items[$i] = new CCat2Data;
-                $this->m_items[$i]->id = $row["cat2_id"];
-                $this->m_items[$i]->name = $row["cat2_name"];
-                $this->m_items[$i]->cat1 = $row["cat1_name"];
-                $i++;
-            }
-        }
-    }
-    
-    class CTypeData
-    {
-        var $name;
-    }
-    
-    class CTypeSet
-    {
-        var $m_items = array();
-        
-        function __construct()
-        {
-            $i = 0;
-            $sql = "select distinct(goods_type) as type from goods order by type";
-            $rs = mysql_query($sql);
-            while ($row = mysql_fetch_array($rs))
-            {
-                $this->m_items[$i] = new CTypeData;
-                $this->m_items[$i]->name = $row["type"];
-                $i++;
-            }
-        }
-    }
     
     function getCondition($showall, $goods, $brand, $cat1, $cat2, $type, $color, $size)
     {
@@ -150,7 +53,6 @@
         return "";
     }
     
-    
     $sql = "select count(distinct goods_id) as reserve_kind, "
         . "count(goods2_id) as total_count, "
         . "sum(goods2_left) as reserve_amount, "
@@ -168,17 +70,21 @@
         . "    on cat2.cat2_id = goods.goods_cat2_id)"
         . "on cat1.cat1_id = cat2.cat2_cat1_id ";
     $sql .= getCondition($showall, $goods, $brand, $cat1, $cat2, $type, $color, $size);
-    $rs = mysql_query($sql);
+    $rs = $conn->query($sql);
     $reserve_kind = 0;
     $total_count = 0;
     $reserve_amount = 0;
     $reserve_total = 0;
-    if ($rs && $row = mysql_fetch_array($rs))
+    if ($rs)
     {
-        $total_count = $row["total_count"];
-        $reserve_kind = $row["reserve_kind"];
-        $reserve_amount = $row["reserve_amount"];
-        $reserve_total = $row["reserve_total"];
+        if ($row = $rs->fetch_assoc())
+        {
+            $total_count = $row["total_count"];
+            $reserve_kind = $row["reserve_kind"];
+            $reserve_amount = $row["reserve_amount"];
+            $reserve_total = $row["reserve_total"];
+        }
+        $rs->free();
     }
     
 ?>
@@ -187,6 +93,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="zh-cn" />
+<link rel="stylesheet" type="text/css" href="./tb.css" />
 <script type="text/javascript" src="./dxx.js" ></script>
 <script type="text/javascript">
     function onGoods(id)
@@ -232,6 +139,7 @@
 </head>
 <body>
 <?php
+    require_once("nav.php");
     defineSortForm();
 ?>
     <table>
@@ -409,10 +317,10 @@
     $starPos = $curpage * 30;
     $lastPos = $starPos + 30;
     $sql .= " limit $starPos, $lastPos";
-    $rs = mysql_query($sql);
+    $rs = $conn->query($sql);
     if ($rs)
     {
-        while ($row = mysql_fetch_array($rs))
+        while ($row = $rs->fetch_assoc())
         {
             echo "<tr><td>";
             echo "<a href='javascript:void(0)' onclick='onGoods(" . $row["goods_id"] . ")'>" . $row["goods_id"] . "</a>";
@@ -446,6 +354,7 @@
             }
             echo "</td></tr>";
         }
+        $rs->free();
     }
 ?>
     </table>
