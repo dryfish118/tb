@@ -1,4 +1,4 @@
-﻿<?php require_once("sort_help.php"); ?>
+﻿<?php require("sort_help.php"); ?>
 <?php
     $operator = isset($_POST["foperator"]) ? $_POST["foperator"] : OPERATOR_INVALID;
     $id = isset($_POST["fid"]) ? $_POST["fid"] : 0;
@@ -9,19 +9,23 @@
         if ($id != 0)
         {
             $sql = "select user_name from user where user_id = $id";
-            $rs = mysql_query($sql);
-            if ($rs && $row = mysql_fetch_array($rs))
+            $rs = $conn->query($sql);
+            if ($rs)
             {
-                $user_name = $row["user_name"];
-                $sql = "delete from user where user_id = $id";
-                if (mysql_query($sql))
+                if ($row = $rs->fetch_assoc())
                 {
-                    addHistory("删除", "人员", $user_name);
+                    $user_name = $row["user_name"];
+                    $sql = "delete from user where user_id = $id";
+                    if ($conn->query($sql))
+                    {
+                        addHistory("删除", "人员", $user_name);
+                    }
+                    else
+                    {
+                        die($sql . "<br />" . $conn->connect_error . "<br />删除失败");
+                    }
                 }
-                else
-                {
-                    die($sql . "<br />" . $conn->connect_error . "<br />删除失败");
-                }
+                $rs->free();
             }
             else
             {
@@ -34,7 +38,7 @@
         if ($name != "")
         {
             $sql = "insert into user(user_name) values('$name')";
-            if (mysql_query($sql))
+            if ($conn->query($sql))
             {
                 addHistory("添加", "人员", $name);
             }
@@ -49,19 +53,23 @@
         if ($id != 0 && $name != "")
         {
             $sql = "select user_name from user where user_id = $id";
-            $rs = mysql_query($sql);
-            if ($rs && $row = mysql_fetch_array($rs))
+            $rs = $conn->query($sql);
+            if ($rs)
             {
-                $user_name = $row["user_name"];
-                $sql = "update user set user_name = '$name' where user_id = $id";
-                if (mysql_query($sql))
+                if ($row = $rs->fetch_assoc())
                 {
-                    addHistory("修改", "人员", "$name($user_name)");
+                    $user_name = $row["user_name"];
+                    $sql = "update user set user_name = '$name' where user_id = $id";
+                    if ($conn->query($sql))
+                    {
+                        addHistory("修改", "人员", "$name($user_name)");
+                    }
+                    else
+                    {
+                        die($sql . "<br />" . $conn->connect_error . "<br />修改失败");
+                    }
                 }
-                else
-                {
-                    die($sql . "<br />" . $conn->connect_error . "<br />修改失败");
-                }
+                $rs->free();
             }
             else
             {
@@ -75,6 +83,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="zh-cn" />
+<link rel="stylesheet" type="text/css" href="./tb.css" />
 <script type="text/javascript" src="./dxx.js" ></script>
 <script type="text/javascript">
     function onRemove(id, name)
@@ -120,6 +129,7 @@
 </head>
 <body>
 <?php
+    require_once("nav.php");
     defineSortForm();
 ?>
     <form method="post" name="user" action="./user.php" onsubmit="return onCheck()" >
@@ -143,10 +153,10 @@
         $sql = "select * from user ";
         $sort_key = array("", "user_name");
         $sql .= appendSortSql($page, $default_dir, $sort_key);
-        $rs = mysql_query($sql);
+        $rs = $conn->query($sql);
 		if ($rs)
 		{
-			while ($row = mysql_fetch_array($rs))
+			while ($row = $rs->fetch_assoc())
 			{
 				echo "        <tr>\n            <td>\n                ";
 				echo "<a href='javascript:void(0)' onclick='onRemove(" 
@@ -156,7 +166,8 @@
 					. $row["user_id"] . ", \"" . $row["user_name"] . "\")'>"
 					. $row["user_name"] . "</a>";
 				echo "\n            </td>\n        </tr>\n";
-			}
+            }
+            $rs->free();
 		}
 ?>
     </table>

@@ -1,4 +1,4 @@
-﻿<?php require_once("conn.php") ?>
+﻿<?php require("conn.php"); ?>
 <?php
 	//$SORT_DISABLE = 0;
     //$SORT_NONE = 1;
