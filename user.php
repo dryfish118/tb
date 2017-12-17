@@ -1,4 +1,4 @@
-﻿<?php require("sort_help.php"); ?>
+﻿<?php require_once("conn.php"); ?>
 <?php
     $operator = isset($_POST["foperator"]) ? $_POST["foperator"] : OPERATOR_INVALID;
     $id = isset($_POST["fid"]) ? $_POST["fid"] : 0;
@@ -130,7 +130,6 @@
 <body>
 <?php
     require_once("nav.php");
-    defineSortForm();
 ?>
     <form method="post" name="user" action="./user.php" onsubmit="return onCheck()" >
         <label>人员：</label><input type="text" name="fname"/>
@@ -139,37 +138,27 @@
         <input type="submit" name="fsub" value="增加" />
         <input type="reset" onclick="onClear()" />
     </form>
-    <p>
-    <table frame="border" rules="all">
-        <tr>
-<?php
-            $page = "user";
-            $default_dir = array(1, 2);
-            $headers = array("*", "10", "人员", "100");
-            generalHeader($page, $default_dir, $headers);
-?>
-        </tr>
+
 <?php
         $sql = "select * from user ";
         $sort_key = array("", "user_name");
-        $sql .= appendSortSql($page, $default_dir, $sort_key);
         $rs = $conn->query($sql);
 		if ($rs)
 		{
 			while ($row = $rs->fetch_assoc())
 			{
-				echo "        <tr>\n            <td>\n                ";
-				echo "<a href='javascript:void(0)' onclick='onRemove(" 
-					. $row["user_id"] . ", \"" . $row["user_name"] . "\")'>X</a>";
-				echo "\n            </td>\n            <td>\n                ";
-				echo "<a href='javascript:void(0)' onclick='onModify("
-					. $row["user_id"] . ", \"" . $row["user_name"] . "\")'>"
-					. $row["user_name"] . "</a>";
-				echo "\n            </td>\n        </tr>\n";
+                echo "<tr><td>";
+                echo $row["user_name"];
+				// echo "<a href='javascript:void(0)' onclick='onRemove(" 
+				// 	. $row["user_id"] . ", \"" . $row["user_name"] . "\")'>X</a>";
+				// echo "</td><td>";
+				// echo "<a href='javascript:void(0)' onclick='onModify("
+				// 	. $row["user_id"] . ", \"" . $row["user_name"] . "\")'>"
+				// 	. $row["user_name"] . "</a>";
+				echo "</td></tr>";
             }
             $rs->free();
 		}
 ?>
-    </table>
 </body>
 </html>

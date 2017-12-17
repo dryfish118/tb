@@ -11,18 +11,18 @@ body {
     border: 0;
 }
 
-div#navfirst {
+div#nav {
     height: 24px;
     margin: 0 0 0 0;
     padding: 0;
     border: 0;
 }
 
-div#navfirst ul#menu {
+div#nav ul#menu {
     position: relative;
 }
 
-div#navfirst ul#menu li {
+div#nav ul#menu li {
     list-style: none;
     position: absolute;
 }
@@ -122,6 +122,6 @@ div#navfirst ul#menu li {
     width: 40px;
 }
 
-div#maincontent {
+div#main {
     float: left;
 }
