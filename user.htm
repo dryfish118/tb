@@ -5,45 +5,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Content-Language" content="zh-cn" />
     <link rel="stylesheet" type="text/css" href="nav.css" />
-    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="./jquery.min.js"></script>
     <script type="text/javascript" src="./dxx.js"></script>
     <script type="text/javascript">
-        $.ajax({
-            url: url_userinfo,
-            dataType: "json",
-            success: function(rawData) {
-                data = $.parseJSON(rawData.substring(5, rawData.length - 1));
-                if (data.uid === undefined) {
-                    doLogin();
-                } else {
-                    g_workFlow = WorkFlow.WorkFlow_AcquireUserInfo;
-                    console.log("WorkFlow_AcquireUserInfo");
-
-                    g_uid = data.uid;
-                    g_userName = data.userName;
-                    g_mobileNo = data.mobileNo;
-                    console.log("user id:\t%d", g_uid);
-                    console.log("user name:\t%s", g_userName);
-                    console.log("mobile:\t%s", g_mobileNo);
-
-                    g_workFlow = WorkFlow.WorkFlow_OpenAccountPage;
-                    console.log("WorkFlow_OpenAccountPage");
-                    g_nextUrl = url_account;
-                    chrome.tabs.update(g_tab.id, {
-                        url: g_nextUrl
-                    });
-                }
-            },
-            error: function() {
-                console.log("failed to acquire the user information.");
-                g_workFlow = WorkFlow.WorkFlow_Idle;
-                console.log("WorkFlow_Idle");
-            }
-        });
-
         $(document).ready(function() {
-            $("p").click(function() {
-                $(this).hide();
+            $.ajax({
+                type: 'GET',
+                url: 'userdata.php',
+                dataType: 'text',
+                success: function(rawData) {
+                    data = $.parseJSON(rawData);
+                    var html = "开始";
+                    $.each(rawData, function(i, userinfo) {
+                        html = html + "<div class=\'user\'>" +
+                            //"<div class=\'id\'>" + userinfo['id'] + "</div>" +
+                            //"<div class=\'name\'>" + userinfo['name'] + "</div>" +
+                            "<div class=\'id\'>" + "user" + "</div>" +
+                            "</div>";
+                    });
+                    html = html + "结束";
+                    $('#userlist').html(html);
+                },
+                error: function() {
+                    $('#userlist').html('failed to get user list.');
+                }
             });
         });
     </script>
