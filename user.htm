@@ -15,15 +15,14 @@
                 dataType: 'text',
                 success: function(rawData) {
                     data = $.parseJSON(rawData);
-                    var html = "开始";
-                    $.each(rawData, function(i, userinfo) {
+                    user = data.user;
+                    var html = "";
+                    $.each(user, function(i, info) {
                         html = html + "<div class=\'user\'>" +
-                            //"<div class=\'id\'>" + userinfo['id'] + "</div>" +
-                            //"<div class=\'name\'>" + userinfo['name'] + "</div>" +
-                            "<div class=\'id\'>" + "user" + "</div>" +
+                            "<div class=\'id\'>" + info['id'] + "</div>" +
+                            "<div class=\'name\'>" + info['name'] + "</div>" +
                             "</div>";
                     });
-                    html = html + "结束";
                     $('#userlist').html(html);
                 },
                 error: function() {

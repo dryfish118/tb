@@ -4,15 +4,15 @@
     $rs = $conn->query($sql);
     if ($rs) {
         $count = 0;
-        $json = "{";
+        $json = "{\"user\":[";
         while ($row = $rs->fetch_assoc()) {
             if ($count) {
                 $json .= ",";
             }
             $count++;
-            $json .= "{\"id\":" . $row["user_id"] . ",\"name\":" . $row["user_name"] . "}";
+            $json .= "{\"id\":" . $row["user_id"] . ",\"name\":\"" . $row["user_name"] . "\"}";
         }
-        $json .= "}";
+        $json .= "]}";
         $rs->free();
 
         echo $json;
