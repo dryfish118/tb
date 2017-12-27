@@ -1,4 +1,4 @@
-﻿<?php require_once("conn.php") ?>
+<?php require_once("conn.php") ?>
 <?php
 	$sql = "select * from user";
     $rs = $conn->query($sql);
