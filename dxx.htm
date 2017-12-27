@@ -9,29 +9,10 @@
     <script type="text/javascript" src="./dxx.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $.ajax({
-                type: 'GET',
-                url: 'userdata.php',
-                dataType: 'text',
-                success: function(rawData) {
-                    data = $.parseJSON(rawData);
-                    user = data.user;
-                    var html = "";
-                    $.each(user, function(i, info) {
-                        html = html + "<div class=\'user\'>" +
-                            "<div class=\'id\'>" + info['id'] + "</div>" +
-                            "<div class=\'name\'>" + info['name'] + "</div>" +
-                            "</div>";
-                    });
-                    $('#userlist').html(html);
-                },
-                error: function() {
-                    $('#userlist').html('failed to get user list.');
-                }
-            });
+            loadUser();
         });
     </script>
-    <title>人员</title>
+    <title>dxx</title>
 </head>
 
 <body>
@@ -58,15 +39,7 @@
             <li id='login'><a href='./login.php?fout=1'>注销</a></li>
         </ul>
     </div>
-    <div id='main'>
-        <div id='useradd'>
-            <label>人员：</label>
-            <input type="text" name="fname" />
-            <input type="submit" value="增加" />
-            <input type="reset" />
-        </div>
-        <div id='userlist'></div>
-    </div>
+    <div id='main'></div>
 </body>
 
 </html>
