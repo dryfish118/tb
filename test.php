@@ -42,5 +42,13 @@
 <input type="button" value="解析" onClick="onParseOrder()">
 <p>
 <div id="result"></div>
+
+<table>
+	<tr><th>人员</th></tr>
+	<tr><td>农春葵</td></tr>
+	<tr><td>邓涛</td></tr>
+	<tr><td>金小艳</td></tr>
+</table>
+
 </body>
 </html>

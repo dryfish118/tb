@@ -1,6 +1,6 @@
 ﻿String.prototype.trim = function() {
     return this.replace(/(^\s*)|(\s*$)/g, "");
-}
+};
 
 function onSort(page, col, dir) {
     sort.fpage.value = page;
@@ -57,6 +57,43 @@ function getCookie(name) {
     }
 }
 
+function SmartTable() {
+    this.ths = null;
+    this.trs = [];
+
+    this.setHeader = function(ths) {
+        this.ths = ths;
+    };
+
+    this.addRow = function(td) {
+        this.trs.push(td);
+    };
+
+    this.getTable = function() {
+        var i = 0,
+            j = 0;
+        var html = "<table>";
+        if (this.ths != null) {
+            html += "<tr>";
+            for (i = 0; i < this.ths.length; i++) {
+                html += "<th>" + this.ths[i] + "</th>";
+            }
+            html += "</tr>";
+        }
+        if (this.trs.length > 0) {
+            for (i = 0; i < this.trs.length; i++) {
+                html += "<tr>";
+                for (j = 0; j < this.trs[i].length; j++) {
+                    html += "<td>" + this.trs[i][j] + "</td>";
+                }
+                html += "</tr>";
+            }
+        }
+        html += "</table>";
+        return html;
+    };
+}
+
 function loadUser() {
     document.title = "人员";
     $.ajax({
@@ -64,20 +101,20 @@ function loadUser() {
         url: 'user.php',
         dataType: 'text',
         success: function(rawData) {
-            data = $.parseJSON(rawData);
-            user = data.user;
+            var data = $.parseJSON(rawData);
+            var user = data.user;
+            var st = new SmartTable();
+            st.setHeader(new Array("人员"));
+            $.each(user, function(i, info) {
+                st.addRow(new Array(info.name));
+            });
+
             var html = "<div id='useradd'><label>人员：</label>" +
                 "<input type='text' name='fname' />" +
                 "<input type='submit' value='增加' />" +
                 "<input type='reset' />" +
-                "</div><div id='userlist'>";
-            $.each(user, function(i, info) {
-                html += "<div class=\'user\'>" +
-                    "<div class=\'id\'>" + info['id'] + "</div>" +
-                    "<div class=\'name\'>" + info['name'] + "</div>" +
-                    "</div>";
-            });
-            html += "</div>";
+                "</div><div id='userlist'>" + st.getTable() +
+                "</div>";
             $('#main').html(html);
         },
         error: function() {
