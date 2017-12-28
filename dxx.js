@@ -58,14 +58,26 @@ function getCookie(name) {
 }
 
 function SmartTable() {
+    this.modify = false;
+    this.delete = false;
     this.ths = null;
+    this.ids = [];
     this.trs = [];
+
+    this.setModify = function() {
+        this.modify = true;
+    };
+
+    this.setDelete = function() {
+        this.delete = true;
+    };
 
     this.setHeader = function(ths) {
         this.ths = ths;
     };
 
-    this.addRow = function(td) {
+    this.addRow = function(id, td) {
+        this.ids.push(id);
         this.trs.push(td);
     };
 
@@ -73,18 +85,29 @@ function SmartTable() {
         var i = 0,
             j = 0;
         var html = "<table>";
-        if (this.ths != null) {
+        if (this.ths != null || this.modify || this.delete) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
                 html += "<th>" + this.ths[i] + "</th>";
             }
+            html += "<th>" + "操作" + "</th>";
             html += "</tr>";
         }
         if (this.trs.length > 0) {
             for (i = 0; i < this.trs.length; i++) {
-                html += "<tr>";
+                html += "<tr value='" + this.ids[i] + "'>";
                 for (j = 0; j < this.trs[i].length; j++) {
                     html += "<td>" + this.trs[i][j] + "</td>";
+                }
+                if (this.modify || this.delete) {
+                    html += "<td>";
+                    if (this.modify) {
+                        html += "<span class='mod'>改</span>";
+                    }
+                    if (this.delete) {
+                        html += "<span class='del'>删</span>";
+                    }
+                    html += "</td>";
                 }
                 html += "</tr>";
             }
@@ -96,29 +119,24 @@ function SmartTable() {
 
 function loadUser() {
     document.title = "人员";
-    $.ajax({
-        type: 'GET',
-        url: 'user.php',
-        dataType: 'text',
-        success: function(rawData) {
-            var data = $.parseJSON(rawData);
-            var user = data.user;
-            var st = new SmartTable();
-            st.setHeader(new Array("人员"));
-            $.each(user, function(i, info) {
-                st.addRow(new Array(info.name));
-            });
+    $.get("user.php", function(rawData, textStatus) {
+        var data = $.parseJSON(rawData);
+        var user = data.user;
 
-            var html = "<div id='useradd'><label>人员：</label>" +
-                "<input type='text' name='fname' />" +
-                "<input type='submit' value='增加' />" +
-                "<input type='reset' />" +
-                "</div><div id='userlist'>" + st.getTable() +
-                "</div>";
-            $('#main').html(html);
-        },
-        error: function() {
-            $('#main').html('failed to get user list.');
-        }
+        var st = new SmartTable();
+        st.setModify();
+        st.setDelete();
+        st.setHeader(["人员"]);
+        $.each(user, function(i, info) {
+            st.addRow(info.id, [info.name]);
+        });
+
+        var html = "<div id='useradd'><label>人员：</label>" +
+            "<input type='text' name='fname' />" +
+            "<input type='submit' value='增加' />" +
+            "<input type='reset' />" +
+            "</div><div id='userlist'>" + st.getTable() +
+            "</div>";
+        $('#main').html(html);
     });
 }
