@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="zh-cn" />
+    <script type="text/javascript" src="./jquery.min.js"></script>
+    <script type="text/javascript" src="./jquery.cookie.js"></script>
+    <script type="text/javascript">
+        function onLogin() {
+            $.post("./login.php", {
+                fname: $("#fname").val(),
+            }, function(data, textStatus) {
+                if (data != "-1") {
+                    $.cookie("cookie_user", data);
+                    document.location.href = "./dxx.htm";
+                } else
+                    $("#fname").text = "";
+            });
+        }
+    </script>
+    <title>登录</title>
+</head>
+
+<body>
+    <form onsubmit="onLogin()">
+        <label>人员：</label><input type="text" id="fname" />
+    </form>
+</body>
+
+</html>

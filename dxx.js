@@ -1,4 +1,4 @@
-﻿String.prototype.trim = function() {
+String.prototype.trim = function() {
     return this.replace(/(^\s*)|(\s*$)/g, "");
 };
 
@@ -119,7 +119,10 @@ function SmartTable() {
 
 function loadUser() {
     document.title = "人员";
-    $.get("user.php", function(rawData, textStatus) {
+    $.post("user.php", {
+        fuser: $.cookie("cookie_user"),
+        faction: "list"
+    }, function(rawData, textStatus) {
         var data = $.parseJSON(rawData);
         var user = data.user;
 
@@ -139,4 +142,15 @@ function loadUser() {
             "</div>";
         $('#main').html(html);
     });
+}
+
+function loadMain() {
+    var page = $.cookie("cookie_page");
+    if (page == null || page == "null" || page == "") {
+        page = "user";
+    }
+
+    if (page == "user") {
+        loadUser();
+    }
 }
