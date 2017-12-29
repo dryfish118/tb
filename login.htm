@@ -8,7 +8,8 @@
     <script type="text/javascript" src="./jquery.cookie.js"></script>
     <script type="text/javascript">
         function onLogin() {
-            $.post("./login.php", {
+            $.post("./user.php", {
+                faction: "login",
                 fname: $("#fname").val(),
             }, function(data, textStatus) {
                 if (data != "-1") {

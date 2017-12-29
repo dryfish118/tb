@@ -121,7 +121,7 @@ function loadUser() {
     document.title = "人员";
     $.post("user.php", {
         fuser: $.cookie("cookie_user"),
-        faction: "list"
+        faction: "userlist"
     }, function(rawData, textStatus) {
         var data = $.parseJSON(rawData);
         var user = data.user;
