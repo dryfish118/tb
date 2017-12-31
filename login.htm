@@ -8,23 +8,37 @@
     <script type="text/javascript" src="./jquery.cookie.js"></script>
     <script type="text/javascript">
         function onLogin() {
-            $.post("./user.php", {
-                faction: "login",
-                fname: $("#fname").val(),
-            }, function(data, textStatus) {
-                if (data != "-1") {
-                    $.cookie("cookie_user", data);
-                    document.location.href = "./dxx.htm";
-                } else
-                    $("#fname").text = "";
+            var name = $("#fname").val();
+            if (name == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "./user.php",
+                async: false,
+                cache: false,
+                data: {
+                    "faction": "login",
+                    "fname": name
+                },
+                dataType: "text",
+                success: function(data, textStatus) {
+                    var id = parseInt(data);
+                    if (id != -1) {
+                        $.cookie("cookie_user", id);
+                        document.location.href = "./dxx.htm";
+                        return true;
+                    }
+                }
             });
+            return false;
         }
     </script>
     <title>登录</title>
 </head>
 
 <body>
-    <form onsubmit="onLogin()">
+    <form action="" onsubmit="return onLogin();">
         <label>人员：</label><input type="text" id="fname" />
     </form>
 </body>

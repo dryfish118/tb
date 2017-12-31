@@ -8,15 +8,16 @@
     <script type="text/javascript" src="./jquery.min.js"></script>
     <script type="text/javascript" src="./jquery.cookie.js"></script>
     <script type="text/javascript">
-        if ($.cookie("cookie_user") == null ||
-            $.cookie("cookie_user") == "null") {
+        var user = $.cookie("cookie_user");
+        if (typeof(user) == "undefined" || user == null || user == "null") {
             document.location.href = "./login.htm";
         }
+
         $(document).ready(function() {
             var dt = new Date();
             var url = "./dxx.js?v=" + dt.getMinutes() + dt.getSeconds();
             $.getScript(url, function(data, textStatus, jqXHR) {
-                loadMain();
+                loadMain("user");
             });
 
             $("#menu a").click(function() {
@@ -28,7 +29,7 @@
                         document.location.href = "./login.htm";
                     } else {
                         $.cookie("cookie_page", page);
-                        loadMain();
+                        loadMain(page);
                     }
                 }
             });

@@ -1,75 +1,16 @@
-String.prototype.trim = function() {
-    return this.replace(/(^\s*)|(\s*$)/g, "");
-};
-
-function onSort(page, col, dir) {
-    sort.fpage.value = page;
-    sort.fcolumn.value = col;
-    sort.fdirection.value = dir;
-    sort.submit();
-}
-
-function jsToday() {
-    var dt = new Date();
-    return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
-}
-
-function updateItemToSelect(objSelect, objItemValue) {
-    for (var i = 0; i < objSelect.options.length; i++) {
-        if (objSelect.options[i].value == objItemValue) {
-            objSelect.options[i].selected = true;
-            break;
-        }
-    }
-}
-
-function getTextFromSelected(objSelect) {
-    var i = 0;
-    for (; i < objSelect.options.length; i++) {
-        if (objSelect.options[i].selected) {
-            break;
-        }
-    }
-    return objSelect.options[i].text;
-}
-
-function getTextByValue(objSelect, v) {
-    var i = 0;
-    for (; i < objSelect.options.length; i++) {
-        if (objSelect.options[i].value == v) {
-            break;
-        }
-    }
-    return objSelect.options[i].text;
-}
-
-function getCookie(name) {
-    var start = document.cookie.indexOf(name + '=');
-    if (start == -1) {
-        return "";
-    }
-    start += name.length + 1;
-    var end = document.cookie.indexOf(';', start);
-    if (end == -1) {
-        return unescape(document.cookie.substring(start));
-    } else {
-        return unescape(document.cookie.substring(start, end));
-    }
-}
-
 function SmartTable() {
-    this.modify = false;
-    this.delete = false;
+    this.fnMod = null;
+    this.fnDel = null;
     this.ths = null;
     this.ids = [];
     this.trs = [];
 
-    this.setModify = function() {
-        this.modify = true;
+    this.setModify = function(fnMod) {
+        this.fnMod = fnMod;
     };
 
-    this.setDelete = function() {
-        this.delete = true;
+    this.setDelete = function(fnDel) {
+        this.fnDel = fnDel;
     };
 
     this.setHeader = function(ths) {
@@ -84,8 +25,8 @@ function SmartTable() {
     this.getTable = function() {
         var i = 0,
             j = 0;
-        var html = "<table>";
-        if (this.ths != null || this.modify || this.delete) {
+        var html = "<table id='edittable'>";
+        if (this.ths !== null || this.modify || this.delete) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
                 html += "<th>" + this.ths[i] + "</th>";
@@ -99,13 +40,17 @@ function SmartTable() {
                 for (j = 0; j < this.trs[i].length; j++) {
                     html += "<td>" + this.trs[i][j] + "</td>";
                 }
-                if (this.modify || this.delete) {
+                if (this.fnMod || this.fnDel) {
                     html += "<td>";
-                    if (this.modify) {
-                        html += "<span class='mod'>改</span>";
+                    if (this.fnMod) {
+                        html += "<span class='mod' " +
+                            "onclick='" + this.fnMod + "(" + i + ")'" +
+                            ">改</span>";
                     }
-                    if (this.delete) {
-                        html += "<span class='del'>删</span>";
+                    if (this.fnDel) {
+                        html += "<span class='del' " +
+                            "onclick='" + this.fnDel + "(" + i + ")'" +
+                            ">删</span>";
                     }
                     html += "</td>";
                 }
@@ -117,40 +62,164 @@ function SmartTable() {
     };
 }
 
+function onModUser(row) {
+    var $tr = $("#edittable tr").eq(row + 1);
+    var id = $tr.attr("value");
+    var name = $tr.children("td").eq(0).text();
+    $("#faction").attr("value", "update");
+    $("#fid").attr("value", id);
+    $("#fname").val(name);
+}
+
+function onDelUser(row) {
+    var $tr = $("#edittable tr").eq(row + 1);
+    var id = $tr.attr("value");
+    $.ajax({
+        type: "POST",
+        url: "./user.php",
+        async: false,
+        cache: false,
+        data: {
+            "fuser": $.cookie("cookie_user"),
+            "faction": "delete",
+            "fid": id
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                loadUser();
+            }
+        }
+    });
+}
+
+function onUser() {
+    var faction = $("#faction").attr("value");
+    $("#faction").attr("value", "add");
+    $.ajax({
+        type: "POST",
+        url: "./user.php",
+        async: false,
+        cache: false,
+        data: {
+            "fuser": $.cookie("cookie_user"),
+            "faction": faction,
+            "fid": $("#fid").attr("value"),
+            "fname": $("#fname").val()
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                loadUser();
+                return true;
+            }
+        }
+    });
+
+    return false;
+}
+
 function loadUser() {
     document.title = "人员";
     $.post("user.php", {
         fuser: $.cookie("cookie_user"),
-        faction: "userlist"
+        faction: "list"
     }, function(rawData, textStatus) {
         var data = $.parseJSON(rawData);
         var user = data.user;
 
         var st = new SmartTable();
-        st.setModify();
-        st.setDelete();
+        st.setModify("onModUser");
+        st.setDelete("onDelUser");
         st.setHeader(["人员"]);
-        $.each(user, function(i, info) {
-            st.addRow(info.id, [info.name]);
+        $.each(user, function(i, item) {
+            st.addRow(item.id, [item.name]);
         });
 
-        var html = "<div id='useradd'><label>人员：</label>" +
-            "<input type='text' name='fname' />" +
-            "<input type='submit' value='增加' />" +
-            "<input type='reset' />" +
-            "</div><div id='userlist'>" + st.getTable() +
-            "</div>";
+        var html = "<form id='editform' onsubmit='return onUser();'>" +
+            "<input type='hidden' id='faction' value='add' />" +
+            "<input type='hidden' id='fid' value='0' />" +
+            "<label>人员：</label><input type='text' id='fname' />" +
+            "</form>" +
+            "<div>" + st.getTable() + "</div>";
         $('#main').html(html);
     });
 }
 
-function loadMain() {
-    var page = $.cookie("cookie_page");
-    if (page == null || page == "null" || page == "") {
-        page = "user";
-    }
+function onModIssue(row) {
+    alert("onMod " + row);
+}
 
-    if (page == "user") {
-        loadUser();
+function onDelIssue(row) {
+    alert("onDel " + row);
+}
+
+function onIssue() {
+    alert("onIssue");
+}
+
+function loadIssue() {
+    document.title = "条目";
+    $.post("issue.php", {
+        fuser: $.cookie("cookie_user"),
+        faction: "list"
+    }, function(rawData, textStatus) {
+        var data = $.parseJSON(rawData);
+        var issue = data.issue;
+
+        var st = new SmartTable();
+        st.setModify("onModIssue");
+        st.setDelete("onDelIssue");
+        st.setHeader(["条目", "收支"]);
+        $.each(issue, function(i, item) {
+            st.addRow(item.id, [item.name, item.out]);
+        });
+
+        var html = "<form id='editform' onsubmit='onIssue()'>" +
+            "<label>条目：</label><input type='text' name='fname' />" +
+            "<label>支出：</label><input type='checkbox' name='fout' CHECKED />" +
+            "</form>" +
+            "<div id='edittable'>" + st.getTable() + "</div>";
+        $('#main').html(html);
+    });
+}
+
+function loadHistory() {
+    document.title = "历史";
+    $.post("history.php", {
+        fuser: $.cookie("cookie_user"),
+        faction: "list"
+    }, function(rawData, textStatus) {
+        var data = $.parseJSON(rawData);
+        var history = data.history;
+
+        var st = new SmartTable();
+        st.setHeader(["人员", "时间", "内容"]);
+        $.each(history, function(i, item) {
+            st.addRow(item.id, [item.user, item.time, item.contents]);
+        });
+
+        var html = "<div id='edittable'>" + st.getTable() + "</div>";
+        $('#main').html(html);
+    });
+}
+
+function loadMain(page) {
+    switch (page) {
+        case "user":
+            {
+                loadUser();
+                break;
+            }
+        case "issue":
+            {
+                loadIssue();
+                break;
+            }
+        case "history":
+            {
+                loadHistory();
+                break;
+            }
     }
 }
