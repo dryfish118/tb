@@ -31,7 +31,9 @@ function SmartTable() {
             for (i = 0; i < this.ths.length; i++) {
                 html += "<th>" + this.ths[i] + "</th>";
             }
-            html += "<th>" + "操作" + "</th>";
+            if (this.fnMod || this.fnDel) {
+                html += "<th>" + "操作" + "</th>";
+            }
             html += "</tr>";
         }
         if (this.trs.length > 0) {
@@ -72,6 +74,9 @@ function onModUser(row) {
 }
 
 function onDelUser(row) {
+    if (!confirm("确定要删除吗？")) {
+        return;
+    }
     var fuser = $.cookie("cookie_user");
     var $tr = $("#edittable tr").eq(row + 1);
     var fid = $tr.attr("value");
@@ -160,6 +165,9 @@ function onModIssue(row) {
 }
 
 function onDelIssue(row) {
+    if (!confirm("确定要删除吗？")) {
+        return;
+    }
     var fuser = $.cookie("cookie_user");
     var $tr = $("#edittable tr").eq(row + 1);
     var fid = $tr.attr("value");
