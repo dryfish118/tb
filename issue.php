@@ -31,13 +31,12 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fname"]) && isset($_POST["fout"])) {
-            $sql = "insert into issue(issue_name, issue_out) values('" 
-                . $_POST["fname"] ."','" 
-                . ($_POST["fout"] == "on" ? 1 : 0)
-                . "')";
+        if (isset($_POST["fname"]) && $_POST["fname"] != "" && isset($_POST["fout"])) {
+            $sql = "insert into issue(issue_name, issue_out) values('" .
+                $_POST["fname"] ."','" .
+                $_POST["fout"] . "')";
             if ($conn->query($sql)) {
-                $result = addHistory("添加", "条目", $_POST["fname"] . "(" . ($_POST["fout"] == "on" ? "支出" : "收入") . ")");
+                $result = addHistory($_POST["fuser"], "add", "issue", $_POST["fname"] . "(" . $_POST["fout"] . ")");
             }
         }
         echo $result;
@@ -51,9 +50,9 @@ switch ($_POST["faction"]) {
             if ($rs) {
                 $row = $rs->fetch_assoc();
                 $fname = $row["issue_name"];
-                $sql = "delete from issue where issue_id='" . $fid . "'";
+                $sql = "delete from issue where issue_id='" . $_POST["fid"] . "'";
                 if ($conn->query($sql)) {
-                    $result = addHistory("删除", "条目", $issue_name);
+                    $result = addHistory($_POST["fuser"], "delete", "issue", $fname);
                 }
             }
         }
@@ -62,17 +61,17 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fid"]) && isset($_POST["fname"]) && isset($_POST["fout"])) {
+        if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "" && isset($_POST["fout"])) {
             $sql = "select issue_name from issue where issue_id='" . $_POST["fid"] . "'";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $issue_name = $row["issue_name"];
-                $sql = "update issue set issue_name='" . $_POST["fname"] 
-                    . "', issue_out=" . ($_POST["fout"] == "on" ? 1 : 0)
-                    . " where issue_id='" . $_POST["fid"] ."'";
-                    if ($conn->query($sql)) {
-                    $result = addHistory("修改", "条目", $_POST["fname"] . "(" . $issue_name . ")");
+                $fname = $row["issue_name"];
+                $sql = "update issue set issue_name='" . $_POST["fname"] .
+                    "', issue_out='" . $_POST["fout"] .
+                    "' where issue_id='" . $_POST["fid"] ."'";
+                if ($conn->query($sql)) {
+                    $result = addHistory($_POST["fuser"], "update", "issue", $_POST["fname"] . "(" . $fname . ")");
                 }
             }
         }

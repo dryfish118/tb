@@ -73,7 +73,7 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fuser"]) && isset($_POST["fid"]) && isset($_POST["fname"])) {
+        if (isset($_POST["fuser"]) && isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
             $sql = "select user_name from user where user_id='" . $_POST["fid"] . "'";
             $rs = $conn->query($sql);
             if ($rs) {
