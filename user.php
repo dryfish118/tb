@@ -24,7 +24,7 @@ switch ($_POST["faction"]) {
         if (!isset($_POST["fuser"])) {
             return;
         }
-        $sql = "select * from user";
+        $sql = "select * from user order by user_id";
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;

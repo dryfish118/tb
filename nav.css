@@ -37,33 +37,33 @@ div#nav ul#menu li {
     width: 40px;
 }
 
-#flow {
+#brand {
     left: 80px;
     width: 40px;
 }
 
-#brand {
+#size {
     left: 120px;
     width: 40px;
 }
 
-#cat {
+#color {
     left: 160px;
     width: 40px;
 }
 
-#size {
+#cat {
     left: 200px;
     width: 40px;
 }
 
-#color {
+#client {
     left: 240px;
     width: 40px;
 }
 
-#client {
-    left: 280px;
+#flow {
+    left: 300px;
     width: 40px;
 }
 

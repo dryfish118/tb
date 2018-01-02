@@ -10,7 +10,7 @@ if (!isset($_POST["faction"])) {
 
 switch ($_POST["faction"]) {
     case "list" : {
-        $sql = "select * from brand";
+        $sql = "select * from brand order by brand_id";
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
