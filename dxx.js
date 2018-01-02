@@ -281,8 +281,27 @@ function loadBrand() {
 
 ///////////////////////////////////////
 // size
-function onOrderSize(row, type) {
-
+function onOrderSize(row, ftype) {
+    var fuser = $.cookie("cookie_user");
+    var $tr = $("#edittable tr").eq(row + 1);
+    var fid = $tr.attr("value");
+    $("#fid").attr("value", fid);
+    $.ajax({
+        type: "POST",
+        url: "./size.php",
+        cache: false,
+        data: {
+            "fuser": fuser,
+            "faction": ftype,
+            "fid": fid
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                loadSize();
+            }
+        }
+    });
 }
 
 function onModSize(row) {

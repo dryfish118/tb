@@ -53,16 +53,16 @@ function SmartTable() {
                 if (this.fnOrder) {
                     html += "<td>";
                     html += "<span class='top' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", 'top')'" +
+                        "onclick='" + this.fnOrder + "(" + i + ", \"top\")'" +
                         ">顶</span>&nbsp;";
                     html += "<span class='bottom' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", 'bottom')'" +
+                        "onclick='" + this.fnOrder + "(" + i + ", \"bottom\")'" +
                         ">底</span>&nbsp;";
                     html += "<span class='up' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", 'up')'" +
+                        "onclick='" + this.fnOrder + "(" + i + ", \"up\")'" +
                         ">上</span>&nbsp;";
                     html += "<span class='down' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", 'down')'" +
+                        "onclick='" + this.fnOrder + "(" + i + ", \"down\")'" +
                         ">下</span>";
                     html += "</td>";
                 }
