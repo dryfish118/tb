@@ -22,8 +22,8 @@
                 loadMain("user");
             });
 
-            $("#menu a").click(function() {
-                var page = $(this).parent().attr("id");
+            $("#menu li").click(function() {
+                var page = $(this).attr("id");
                 if (page != "") {
                     if (page == "login") {
                         $.cookie("cookie_user", null);
@@ -43,25 +43,25 @@
 <body>
     <div id="nav">
         <ul id="menu">
-            <li id="user"><a href="#">人员</a></li>
-            <li id="issue"><a href="#">条目</a></li>
-            <li id="brand"><a href="#">品牌</a></li>
-            <li id="size"><a href="#">尺寸</a></li>
-            <li id="color"><a href="#">颜色</a></li>
-            <li id="cat"><a href="#">类别</a></li>
-            <li id="client"><a href="#">客户</a></li>
-            <li id="flow"><a href="#">流水</a></li>
-            <li id="goods"><a href="#">商品</a></li>
-            <li id="stock"><a href="#">进货</a></li>
-            <li id="sell"><a href="#">销售</a></li>
-            <li id="querystock"><a href="#">进货查询</a></li>
-            <li id="queryreserve"><a href="#">库存查询</a></li>
-            <li id="queryincome"><a href="#">收支查询</a></li>
-            <li id="querysell"><a href="#">销售查询</a></li>
-            <li id="sendip"><a href="#">系统</a></li>
-            <li id="history"><a href="#">历史</a></li>
-            <li id="diary"><a href="#">日志</a></li>
-            <li id="login"><a href="#">注销</a></li>
+            <li id="user">人员</li>
+            <li id="issue">条目</li>
+            <li id="brand">品牌</li>
+            <li id="size">尺寸</li>
+            <li id="color">颜色</li>
+            <li id="cat">类别</li>
+            <li id="client">客户</li>
+            <li id="flow">流水</li>
+            <li id="goods">商品</li>
+            <li id="stock">进货</li>
+            <li id="sell">销售</li>
+            <li id="querystock">进货查询</li>
+            <li id="queryreserve">库存查询</li>
+            <li id="queryincome">收支查询</li>
+            <li id="querysell">销售查询</li>
+            <li id="sendip">系统</li>
+            <li id="history">历史</li>
+            <li id="diary">日志</li>
+            <li id="login">注销</li>
         </ul>
     </div>
     <div id="main"></div>

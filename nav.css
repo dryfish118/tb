@@ -25,6 +25,9 @@ div#nav ul#menu {
 div#nav ul#menu li {
     list-style: none;
     position: absolute;
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
 }
 
 #user {
