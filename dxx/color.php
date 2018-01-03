@@ -1,14 +1,14 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($fuser == 0 || $faction == "") {
     return;
 }
 
-if (!isset($_POST["faction"])) {
-    return;
-}
-
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+switch ($faction) {
     case "list" : {
         $sql = "select * from color order by color_order";
         $rs = $conn->query($sql);
@@ -33,11 +33,10 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "insert into color(color_name, color_order) select '" .
-                $_POST["fname"] . "', (max(color_order) + 1) from color";
+        if ($fname != "") {
+            $sql = "insert into color(color_name,color_order) select '$fname', (max(color_order)+1) from color";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "color", $_POST["fname"]);
+                $result = addHistory($fuser, "add", "color", $fname);
             }
         }
         echo $result;
@@ -45,8 +44,8 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fid"])) {
-            $sql = "select color_name, color_order from color where color_id='" . $_POST["fid"] . "'";
+        if ($fid > 0) {
+            $sql = "select color_name, color_order from color where color_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
@@ -54,11 +53,11 @@ switch ($_POST["faction"]) {
                 $forder = $row["color_order"];
                 
                 $conn->autocommit(false);
-                $sql = "delete from color where color_id='" . $_POST["fid"] . "'";
+                $sql = "delete from color where color_id=$fid";
                 if ($conn->query($sql)) {
-                    $sql = "update color set color_order = color_order - 1 where color_order > " . $color_order;
+                    $sql = "update color set color_order=color_order-1 where color_order>$forder";
                     if ($conn->query($sql)) {
-                        $result = addHistory($_POST["fuser"], "delete", "color", $fname);
+                        $result = addHistory($fuser, "delete", "color", $fname);
                         $conn->commit();
                     } else {
                         $conn->rollback();
@@ -73,16 +72,15 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "select color_name from color where color_id='" . $_POST["fid"] . "'";
+        if ($fid > 0 && $fname != "") {
+            $sql = "select color_name from color where color_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["color_name"];
-                $sql = "update color set color_name='" . $_POST["fname"] .
-                    "' where color_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["color_name"];
+                $sql = "update color set color_name='$fname' where color_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "color", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "color", "$fname_old->$fname");
                 }
             }
         }

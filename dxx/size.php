@@ -1,14 +1,14 @@
 <?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($fuser == 0 || $faction == "") {
     return;
 }
 
-if (!isset($_POST["faction"])) {
-    return;
-}
-
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+switch ($faction) {
     case "list" : {
         $sql = "select * from size order by size_order";
         $rs = $conn->query($sql);
@@ -33,11 +33,10 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "insert into size(size_name, size_order) select '" .
-                $_POST["fname"] . "', (max(size_order) + 1) from size";
+        if ($fname != "") {
+            $sql = "insert into size(size_name, size_order) select '$fname',(max(size_order)+1) from size";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "size", $_POST["fname"]);
+                $result = addHistory($fuser, "add", "size", $fname);
             }
         }
         echo $result;
@@ -45,8 +44,8 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fid"])) {
-            $sql = "select size_name, size_order from size where size_id='" . $_POST["fid"] . "'";
+        if ($fid > 0) {
+            $sql = "select size_name, size_order from size where size_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
@@ -54,11 +53,11 @@ switch ($_POST["faction"]) {
                 $forder = $row["size_order"];
                 
                 $conn->autocommit(false);
-                $sql = "delete from size where size_id='" . $_POST["fid"] . "'";
+                $sql = "delete from size where size_id=$fid";
                 if ($conn->query($sql)) {
-                    $sql = "update size set size_order = size_order - 1 where size_order > " . $size_order;
+                    $sql = "update size set size_order=size_order-1 where size_order>$forder";
                     if ($conn->query($sql)) {
-                        $result = addHistory($_POST["fuser"], "delete", "size", $fname);
+                        $result = addHistory($fuser, "delete", "size", $fname);
                         $conn->commit();
                     } else {
                         $conn->rollback();
@@ -73,16 +72,15 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "select size_name from size where size_id='" . $_POST["fid"] . "'";
+        if ($fid > 0 && $fname != "") {
+            $sql = "select size_name from size where size_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["size_name"];
-                $sql = "update size set size_name='" . $_POST["fname"] .
-                    "' where size_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["size_name"];
+                $sql = "update size set size_name='$fname' where size_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "size", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "size", "$fname_old->$fname");
                 }
             }
         }

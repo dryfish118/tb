@@ -1,14 +1,14 @@
 <?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($fuser == 0 || $faction == "") {
     return;
 }
 
-if (!isset($_POST["faction"])) {
-    return;
-}
-
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+switch ($faction) {
     case "list" : {
         $sql = "select * from brand order by brand_id";
         $rs = $conn->query($sql);
@@ -31,11 +31,10 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "insert into brand(brand_name) values('" .
-                $_POST["fname"] . "')";
+        if ($fname != "") {
+            $sql = "insert into brand(brand_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "brand", $_POST["fname"]);
+                $result = addHistory($fuser, "add", "brand", $fname);
             }
         }
         echo $result;
@@ -43,15 +42,15 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fid"])) {
-            $sql = "select brand_name from brand where brand_id='" . $_POST["fid"] . "'";
+        if ($fid > 0) {
+            $sql = "select brand_name from brand where brand_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
                 $fname = $row["brand_name"];
-                $sql = "delete from brand where brand_id='" . $_POST["fid"] . "'";
+                $sql = "delete from brand where brand_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "delete", "brand", $fname);
+                    $result = addHistory($fuser, "delete", "brand", $fname);
                 }
             }
         }
@@ -60,16 +59,15 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "select brand_name from brand where brand_id='" . $_POST["fid"] . "'";
+        if ($fid > 0 && $fname != "") {
+            $sql = "select brand_name from brand where brand_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["brand_name"];
-                $sql = "update brand set brand_name='" . $_POST["fname"] .
-                    "' where brand_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["brand_name"];
+                $sql = "update brand set brand_name='$fname' where brand_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "brand", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "brand", "$fname_old->$fname");
                 }
             }
         }

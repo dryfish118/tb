@@ -1,14 +1,15 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($fuser == 0 || $faction == "") {
     return;
 }
 
-if (!isset($_POST["faction"])) {
-    return;
-}
-
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+$fout = isset($_POST["fout"]) ? $_POST["fout"] : 1;
+switch ($faction) {
     case "list" : {
         $sql = "select * from issue order by issue_id";
         $rs = $conn->query($sql);
@@ -31,12 +32,10 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fname"]) && $_POST["fname"] != "" && isset($_POST["fout"])) {
-            $sql = "insert into issue(issue_name, issue_out) values('" .
-                $_POST["fname"] ."','" .
-                $_POST["fout"] . "')";
+        if ($fname != "") {
+            $sql = "insert into issue(issue_name, issue_out) values('$fname',$fout)";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "issue", $_POST["fname"] . "(" . $_POST["fout"] . ")");
+                $result = addHistory($fuser, "add", "issue", $fname . "(" . $fout . ")");
             }
         }
         echo $result;
@@ -44,15 +43,15 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fid"])) {
-            $sql = "select issue_name from issue where issue_id='" . $_POST["fid"] . "'";
+        if ($fid > 0) {
+            $sql = "select issue_name from issue where issue_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
                 $fname = $row["issue_name"];
-                $sql = "delete from issue where issue_id='" . $_POST["fid"] . "'";
+                $sql = "delete from issue where issue_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "delete", "issue", $fname);
+                    $result = addHistory($fuser, "delete", "issue", $fname);
                 }
             }
         }
@@ -61,17 +60,15 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "" && isset($_POST["fout"])) {
-            $sql = "select issue_name from issue where issue_id='" . $_POST["fid"] . "'";
+        if ($fid > 0 && $fname != "") {
+            $sql = "select issue_name from issue where issue_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["issue_name"];
-                $sql = "update issue set issue_name='" . $_POST["fname"] .
-                    "', issue_out='" . $_POST["fout"] .
-                    "' where issue_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["issue_name"];
+                $sql = "update issue set issue_name='$fname', issue_out=$fout where issue_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "issue", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "issue", "$fname_old->$fname");
                 }
             }
         }

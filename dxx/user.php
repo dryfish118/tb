@@ -1,14 +1,18 @@
 <?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["faction"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($faction == "") {
     return;
 }
 
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+switch ($faction) {
     case "login": {
         $user_id = -1;
-        if (isset($_POST["fname"])) {
-            $sql = "select * from user where user_name like '" . $_POST["fname"] . "'";
+        if ($fname != "") {
+            $sql = "select * from user where user_name like '$fname'";
             if ($rs = $conn->query($sql)) {
                 if ($row = $rs->fetch_assoc()) {
                     $user_id = $row["user_id"];
@@ -21,7 +25,7 @@ switch ($_POST["faction"]) {
         break;
     }
     case "list" : {
-        if (!isset($_POST["fuser"])) {
+        if ($fuser == 0) {
             return;
         }
         $sql = "select * from user order by user_id";
@@ -45,10 +49,10 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-        if (isset($_POST["fuser"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "insert into user(user_name) values('" . $_POST["fname"] . "')";
+        if ($fuser != 0 && $fname != "") {
+            $sql = "insert into user(user_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "user", $_POST["fname"]);
+                $result = addHistory($fuser, "add", "user", $fname);
             }
         }
         echo $result;
@@ -56,15 +60,15 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fuser"]) && isset($_POST["fid"])) {
-            $sql = "select user_name from user where user_id='" . $_POST["fid"] . "'";
+        if ($fuser != 0 && $fid > 0) {
+            $sql = "select user_name from user where user_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
                 $fname = $row["user_name"];
-                $sql = "delete from user where user_id='" . $_POST["fid"] . "'";
+                $sql = "delete from user where user_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "delete", "user", $fname);
+                    $result = addHistory($fuser, "delete", "user", $fname);
                 }
             }
         }
@@ -73,16 +77,15 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-        if (isset($_POST["fuser"]) && isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "") {
-            $sql = "select user_name from user where user_id='" . $_POST["fid"] . "'";
+        if ($fuser != 0 && $fid > 0 && $fname != "") {
+            $sql = "select user_name from user where user_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["user_name"];
-                $sql = "update user set user_name='" . $_POST["fname"] .
-                    "' where user_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["user_name"];
+                $sql = "update user set user_name='$fname' where user_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "user", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "user", "$fname_old->$fname");
                 }
             }
         }

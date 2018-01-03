@@ -1,14 +1,19 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"])) {
+$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
+if ($fuser == 0 || $faction == "") {
     return;
 }
 
-if (!isset($_POST["faction"])) {
-    return;
-}
-
-switch ($_POST["faction"]) {
+$fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
+$fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+$ftaobao = isset($_POST["ftaobao"]) ? $_POST["ftaobao"] : "";
+$ftel = isset($_POST["ftel"]) ? $_POST["ftel"] : "";
+$ftel2 = isset($_POST["ftel2"]) ? $_POST["ftel2"] : "";
+$faddr = isset($_POST["faddr"]) ? $_POST["faddr"] : "";
+$fcode = isset($_POST["fcode"]) ? $_POST["fcode"] : "";
+switch ($faction) {
     case "list" : {
         $sql = "select * from client order by client_id limit 0,10";
         $rs = $conn->query($sql);
@@ -37,17 +42,12 @@ switch ($_POST["faction"]) {
     }
     case "add": {
         $result = 0;
-		if (isset($_POST["fname"]) && $_POST["fname"] != "" &&
-			isset($_POST["ftaobao"]) && $_POST["ftaobao"] != "" &&
-			isset($_POST["ftel"]) && isset($_POST["ftel2"]) &&
-			isset($_POST["faddr"]) && isset($_POST["fcode"])) {
+		if ($fname != "" && $ftaobao != "") {
 			$sql = "insert into client(client_name, client_taobao," .
-				"client_tel, client_tel2, client_addr, client_code) values('" .
-				$_POST["fname"] . "','" . $_POST["ftaobao"] . "','" .
-				$_POST["ftel"] . "','" . $_POST["ftel2"] . "','" .
-				$_POST["faddr"] . "','" . $_POST["fcode"] . "')";
+                "client_tel, client_tel2, client_addr, client_code) values(" .
+                "'$fname','$ftaobao','$ftel','$ftel2','$faddr','$fcode')";
             if ($conn->query($sql)) {
-                $result = addHistory($_POST["fuser"], "add", "client", $_POST["fname"]);
+                $result = addHistory($fuser, "add", "client", $fname);
             }
         }
         echo $result;
@@ -55,15 +55,15 @@ switch ($_POST["faction"]) {
     }
     case "delete": {
         $result = 0;
-        if (isset($_POST["fid"])) {
-            $sql = "select client_name from client where client_id='" . $_POST["fid"] . "'";
+        if ($fid > 0) {
+            $sql = "select client_name from client where client_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
                 $fname = $row["client_name"];
-                $sql = "delete from client where client_id='" . $_POST["fid"] . "'";
+                $sql = "delete from client where client_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "delete", "client", $fname);
+                    $result = addHistory($fuser, "delete", "client", $fname);
                 }
             }
         }
@@ -72,24 +72,17 @@ switch ($_POST["faction"]) {
     }
     case "update": {
         $result = 0;
-		if (isset($_POST["fid"]) && isset($_POST["fname"]) && $_POST["fname"] != "" &&
-			isset($_POST["ftaobao"]) && $_POST["ftaobao"] != "" &&
-			isset($_POST["ftel"]) && isset($_POST["ftel2"]) &&
-			isset($_POST["faddr"]) && isset($_POST["fcode"])) {
-            $sql = "select client_name from client where client_id='" . $_POST["fid"] . "'";
+		if ($fid > 0 && $fname != "" && $ftaobao != "") {
+            $sql = "select client_name from client where client_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["client_name"];
-				$sql = "update client set client_name='" . $_POST["fname"] .
-					"', client_taobao='" . $_POST["ftaobao"] .
-					"', client_tel='" . $_POST["ftel"] .
-					"', client_tel2='" . $_POST["ftel2"] .
-					"', client_addr='" . $_POST["faddr"] .
-					"', client_code='" . $_POST["fcode"] .
-                    "' where client_id='" . $_POST["fid"] ."'";
+                $fname_old = $row["client_name"];
+				$sql = "update client set client_name='$fname', client_taobao='$ftaobao'," .
+                    "client_tel='$ftel', client_tel2='$ftel2', client_addr='$faddr'," .
+                    "client_code='$fcode' where client_id='$fid'";
                 if ($conn->query($sql)) {
-                    $result = addHistory($_POST["fuser"], "update", "client", $_POST["fname"] . "(" . $fname . ")");
+                    $result = addHistory($fuser, "update", "client", "$fname_old->$fname");
                 }
             }
         }
