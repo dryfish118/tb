@@ -90,151 +90,19 @@ switch ($_POST["faction"]) {
         break;
     }
     case "top": {
-        $result = 0;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select size_name, size_order from size where size_id='" . $_POST["fid"] . "'";
-            $rs = $conn->query($sql);
-            if ($rs) {
-                $row = $rs->fetch_assoc();
-                $fname = $row["size_name"];
-                $order_current = $row["size_order"];
-
-                $sql = "select min(size_order) as order_min from size";
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $order_min = $row["order_min"];
-
-                    if ($order_min < $order_current) {
-                        $conn->autocommit(false);
-                        $sql = "update size set size_order=size_order+1 where size_order<" . $order_current;
-                        if ($conn->query($sql)) {
-                            $sql = "update size set size_order=" . $order_min . " where size_id='" . $_POST["fid"] . "'";
-                            if ($conn->query($sql)) {
-                                $result = addHistory($_POST["fuser"], "top", "size", $fname);
-                                $conn->commit();
-                            } else {
-                                $conn->rollback();
-                            }
-                        } else {
-                            $conn->rollback();
-                        }
-                    }
-                }
-            }
-        }
-        echo $result;
+        echo toTop("size");
         break;
     }
     case "bottom": {
-        $result = 0;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select size_name, size_order from size where size_id='" . $_POST["fid"] . "'";
-            $rs = $conn->query($sql);
-            if ($rs) {
-                $row = $rs->fetch_assoc();
-                $fname = $row["size_name"];
-                $order_current = $row["size_order"];
-
-                $sql = "select max(size_order) as order_max from size";
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $order_max = $row["order_max"];
-
-                    if ($order_max > $order_current) {
-                        $conn->autocommit(false);
-                        $sql = "update size set size_order=size_order-1 where size_order>" . $order_current;
-                        if ($conn->query($sql)) {
-                            $sql = "update size set size_order=" . $order_max . " where size_id='" . $_POST["fid"] . "'";
-                            if ($conn->query($sql)) {
-                                $result = addHistory($_POST["fuser"], "bottom", "size", $fname);
-                                $conn->commit();
-                            } else {
-                                $conn->rollback();
-                            }
-                        } else {
-                            $conn->rollback();
-                        }
-                    }
-                }
-            }
-        }
-        echo $result;
+        echo toBottom("size");
         break;
     }
     case "up": {
-        $result = 0;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select size_name, size_order from size where size_id='" . $_POST["fid"] . "'";
-            $rs = $conn->query($sql);
-            if ($rs) {
-                $row = $rs->fetch_assoc();
-                $fname = $row["size_name"];
-                $order_current = $row["size_order"];
-
-                $sql = "select max(size_order) as order_max from size where size_order<" . $order_current;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $order_max = $row["order_max"];
-
-                    if ($order_max < $order_current) {
-                        $conn->autocommit(false);
-                        $sql = "update size set size_order=" . $order_current . " where size_order=" . $order_max;
-                        if ($conn->query($sql)) {
-                            $sql = "update size set size_order=" . $order_max . " where size_id='" . $_POST["fid"] . "'";
-                            if ($conn->query($sql)) {
-                                $result = addHistory($_POST["fuser"], "up", "size", $fname);
-                                $conn->commit();
-                            } else {
-                                $conn->rollback();
-                            }
-                        } else {
-                            $conn->rollback();
-                        }
-                    }
-                }
-            }
-        }
-        echo $result;
+        echo toUp("size");
         break;
     }
     case "down": {
-        $result = 0;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select size_name, size_order from size where size_id='" . $_POST["fid"] . "'";
-            $rs = $conn->query($sql);
-            if ($rs) {
-                $row = $rs->fetch_assoc();
-                $fname = $row["size_name"];
-                $order_current = $row["size_order"];
-
-                $sql = "select min(size_order) as order_min from size where size_order>" . $order_current;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $order_min = $row["order_min"];
-
-                    if ($order_min > $order_current) {
-                        $conn->autocommit(false);
-                        $sql = "update size set size_order=" . $order_current . " where size_order=" . $order_min;
-                        if ($conn->query($sql)) {
-                            $sql = "update size set size_order=" . $order_min . " where size_id='" . $_POST["fid"] . "'";
-                            if ($conn->query($sql)) {
-                                $result = addHistory($_POST["fuser"], "down", "size", $fname);
-                                $conn->commit();
-                            } else {
-                                $conn->rollback();
-                            }
-                        } else {
-                            $conn->rollback();
-                        }
-                    }
-                }
-            }
-        }
-        echo $result;
+        echo toDown("size");
         break;
     }
 }
