@@ -4,11 +4,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Content-Language" content="zh-cn" />
-    <link rel="stylesheet" type="text/css" href="./nav.css" />
-    <link rel="stylesheet" type="text/css" href="./table.css" />
-    <script type="text/javascript" src="./jquery.min.js"></script>
-    <script type="text/javascript" src="./jquery.cookie.js"></script>
-    <script type="text/javascript" src="./table.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="./css/table.css" />
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./js/table.js"></script>
     <script type="text/javascript">
         var user = $.cookie("cookie_user");
         if (typeof(user) == "undefined" || user == null || user == "null") {
@@ -17,7 +17,7 @@
 
         $(document).ready(function() {
             var dt = new Date();
-            var url = "./dxx.js?v=" + dt.getMinutes() + dt.getSeconds();
+            var url = "./js/dxx.js?v=" + dt.getMinutes() + dt.getSeconds();
             $.getScript(url, function(data, textStatus, jqXHR) {
                 loadMain("user");
             });
