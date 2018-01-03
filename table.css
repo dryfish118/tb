@@ -1,34 +1,25 @@
 table#edittable table {
     width: 100%;
-    margin: 15px 0;
-    border: 0;
+    margin: 15px 0
 }
 
 table#edittable th {
-    background-color: #50C2FF;
-    color: #FFFFFF
+    background-color: #93DAFF;
+    color: #000000
 }
 
 table#edittable,
 table#edittable th,
 table#edittable td {
+    font-size: 0.95em;
     text-align: center;
     padding: 4px;
-    border-collapse: collapse;
-}
-
-table#edittable th,
-table#edittable td {
-    border: 1px solid #9bdcfe;
-    border-width: 1px 0 1px 0
-}
-
-table#edittable tr {
-    border: 1px solid #9bdcfe;
+    border: 1px solid #c1e9fe;
+    border-collapse: collapse
 }
 
 table#edittable tr:nth-child(odd) {
-    background-color: #c4eafe;
+    background-color: #dbf2fe;
 }
 
 table#edittable tr:nth-child(even) {
