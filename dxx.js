@@ -74,7 +74,7 @@ function loadUser() {
         var st = new SmartTable();
         st.setModify("onModUser");
         st.setDelete("onDelUser");
-        st.setHeader(["人员"]);
+        st.setHeader([document.title]);
         $.each(user, function(i, item) {
             st.addRow(item.id, [item.name]);
         });
@@ -82,7 +82,7 @@ function loadUser() {
         var html = "<form id='editform' onsubmit='return onUser();'>" +
             "<input type='hidden' id='faction' value='add' />" +
             "<input type='hidden' id='fid' value='0' />" +
-            "<label>人员：</label><input type='text' id='fname' />" +
+            "<label>" + document.title + "</label><input type='text' id='fname' />" +
             "<input type='submit' /><input type='reset' />" +
             "</form>" +
             "<div>" + st.getTable() + "</div>";
@@ -170,7 +170,7 @@ function loadIssue() {
         var st = new SmartTable();
         st.setModify("onModIssue");
         st.setDelete("onDelIssue");
-        st.setHeader(["条目", "收支"]);
+        st.setHeader([document.title, "收支"]);
         $.each(issue, function(i, item) {
             st.addRow(item.id, [item.name, item.out]);
         });
@@ -178,7 +178,7 @@ function loadIssue() {
         var html = "<form id='editform' onsubmit='return onIssue();'>" +
             "<input type='hidden' id='faction' value='add' />" +
             "<input type='hidden' id='fid' value='0' />" +
-            "<label>条目：</label><input type='text' id='fname' />" +
+            "<label>" + document.title + "</label><input type='text' id='fname' />" +
             "<label>支出：</label><input type='checkbox' id='fout' CHECKED />" +
             "<input type='submit' /><input type='reset' />" +
             "</form>" +
@@ -263,7 +263,7 @@ function loadBrand() {
         var st = new SmartTable();
         st.setModify("onModBrand");
         st.setDelete("onDelBrand");
-        st.setHeader(["品牌"]);
+        st.setHeader([document.title]);
         $.each(brand, function(i, item) {
             st.addRow(item.id, [item.name]);
         });
@@ -271,7 +271,7 @@ function loadBrand() {
         var html = "<form id='editform' onsubmit='return onBrand();'>" +
             "<input type='hidden' id='faction' value='add' />" +
             "<input type='hidden' id='fid' value='0' />" +
-            "<label>品牌：</label><input type='text' id='fname' />" +
+            "<label>" + document.title + "</label><input type='text' id='fname' />" +
             "<input type='submit' /><input type='reset' />" +
             "</form>" +
             "<div>" + st.getTable() + "</div>";
@@ -379,7 +379,7 @@ function loadSize() {
         st.setOrder("onOrderSize");
         st.setModify("onModSize");
         st.setDelete("onDelSize");
-        st.setHeader(["尺寸"]);
+        st.setHeader([document.title]);
         $.each(size, function(i, item) {
             st.addRow(item.id, [item.name]);
         });
@@ -387,7 +387,7 @@ function loadSize() {
         var html = "<form id='editform' onsubmit='return onSize();'>" +
             "<input type='hidden' id='faction' value='add' />" +
             "<input type='hidden' id='fid' value='0' />" +
-            "<label>尺寸</label><input type='text' id='fname' />" +
+            "<label>" + document.title + "</label><input type='text' id='fname' />" +
             "<input type='submit' /><input type='reset' />" +
             "</form>" +
             "<div>" + st.getTable() + "</div>";
@@ -495,7 +495,7 @@ function loadColor() {
         st.setOrder("onOrderColor");
         st.setModify("onModColor");
         st.setDelete("onDelColor");
-        st.setHeader(["颜色"]);
+        st.setHeader([document.title]);
         $.each(color, function(i, item) {
             st.addRow(item.id, [item.name]);
         });
@@ -503,8 +503,126 @@ function loadColor() {
         var html = "<form id='editform' onsubmit='return onColor();'>" +
             "<input type='hidden' id='faction' value='add' />" +
             "<input type='hidden' id='fid' value='0' />" +
-            "<label>颜色</label><input type='text' id='fname' />" +
+            "<label>" + document.title + "</label><input type='text' id='fname' />" +
             "<input type='submit' /><input type='reset' />" +
+            "</form>" +
+            "<div>" + st.getTable() + "</div>";
+        $('#main').html(html);
+    });
+}
+
+///////////////////////////////////////
+// client
+function onModClient(row) {
+    var $tr = $("#edittable tr").eq(row + 1);
+    var fid = $tr.attr("value");
+    var $td = $tr.children("td");
+    var fname = $td.eq(0).text();
+    var ftaobao = $td.eq(1).text();
+    var ftel = $td.eq(2).text();
+    var ftel2 = $td.eq(3).text();
+    var faddr = $td.eq(4).text();
+    var fcode = $td.eq(5).text();
+    $("#faction").attr("value", "update");
+    $("#fid").attr("value", fid);
+    $("#fname").val(fname);
+    $("#ftaobao").val(ftaobao);
+    $("#ftel").val(ftel);
+    $("#ftel2").val(ftel2);
+    $("#faddr").val(faddr);
+    $("#fcode").val(fcode);
+}
+
+function onDelClient(row) {
+    if (!confirm("确定要删除吗？")) {
+        return;
+    }
+    var fuser = $.cookie("cookie_user");
+    var $tr = $("#edittable tr").eq(row + 1);
+    var fid = $tr.attr("value");
+    $.ajax({
+        type: "POST",
+        url: "./client.php",
+        cache: false,
+        data: {
+            "fuser": fuser,
+            "faction": "delete",
+            "fid": fid
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                loadClient();
+            }
+        }
+    });
+}
+
+function onClient() {
+    var fuser = $.cookie("cookie_user");
+    var faction = $("#faction").attr("value");
+    var fid = $("#fid").attr("value");
+    var fname = $("#fname").val();
+    var ftaobao = $("#ftaobao").val();
+    var ftel = $("#ftel").val();
+    var ftel2 = $("#ftel2").val();
+    var faddr = $("#faddr").val();
+    var fcode = $("#fcode").val();
+    $("#faction").attr("value", "add");
+    $.ajax({
+        type: "POST",
+        url: "./client.php",
+        cache: false,
+        data: {
+            "fuser": fuser,
+            "faction": faction,
+            "fid": fid,
+            "fname": fname,
+            "ftaobao": ftaobao,
+            "ftel": ftel,
+            "ftel2": ftel2,
+            "faddr": faddr,
+            "fcode": fcode
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                loadClient();
+                return true;
+            }
+        }
+    });
+
+    return false;
+}
+
+function loadClient() {
+    document.title = "客户";
+    $.post("client.php", {
+        "fuser": $.cookie("cookie_user"),
+        "faction": "list"
+    }, function(rawData, textStatus) {
+        var data = $.parseJSON(rawData);
+        var client = data.client;
+
+        var st = new SmartTable();
+        st.setModify("onModClient");
+        st.setDelete("onDelClient");
+        st.setHeader([document.title, "淘宝名", "手机", "座机", "地址", "邮编"]);
+        $.each(client, function(i, item) {
+            st.addRow(item.id, [item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
+        });
+
+        var html = "<form id='editform' onsubmit='return onClient();'>" +
+            "<input type='hidden' id='faction' value='add' />" +
+            "<input type='hidden' id='fid' value='0' />" +
+            "<div><label>" + document.title + "</label><input type='text' id='fname' /></div>" +
+            "<div><label>淘宝名</label><input type='text' id='ftaobao' /></div>" +
+            "<div><label>手机</label><input type='text' id='ftel' /></div>" +
+            "<div><label>座机</label><input type='text' id='ftel2' /></div>" +
+            "<div><label>地址</label><input type='text' id='faddr' /></div>" +
+            "<div><label>邮编</label><input type='text' id='fcode' /></div>" +
+            "<div><input type='submit' /><input type='reset' /></div>" +
             "</form>" +
             "<div>" + st.getTable() + "</div>";
         $('#main').html(html);
@@ -560,6 +678,16 @@ function loadMain(page) {
         case "color":
             {
                 loadColor();
+                break;
+            }
+        case "cat":
+            {
+                loadCat();
+                break;
+            }
+        case "client":
+            {
+                loadClient();
                 break;
             }
         case "history":
