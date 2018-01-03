@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-cn" />
+<script type="text/javascript" src="./dxx.js" ></script>
+<script type="text/javascript">
+	function onAdd(name)
+	{
+	}
+	
+    function onRemove(id, name)
+    {
+        if (confirm("确定要删除\"" + name + "\"吗？"))
+        {
+            user.foperator.value = <?php echo OPERATOR_REMOVE; ?>;
+            user.fid.value = id;
+            user.submit();
+        }
+    }
+    function onModify(id, name)
+    {
+        user.foperator.value = <?php echo OPERATOR_MODIFY; ?>;
+        user.fid.value = id;
+        user.fname.value = name;
+        user.fsub.value = "修改";
+        
+        scroll(0,0);
+    }
+    function onClear()
+    {
+        user.foperator.value = <?php echo OPERATOR_ADD; ?>;
+        user.fid.value = 0;
+        user.fname.value = "";
+        user.fsub.value = "增加";
+    }
+    function onCheck()
+    {
+        user.fname.value = user.fname.value.trim();
+        if (user.fname.value == "")
+        {
+            alert("输入名字");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+</script>
+<title>人员</title>
+</head>
+<body>
+    <label>人员：</label>
+	<input type="text" name="fname"/>
+    <input type="hidden" name="fid" value="0" />
+    <input type="submit" name="fsub" value="增加" onclick="onAdd()" />
+    <input type="reset" onclick="onClear()" />
+    <p>
+	<div id="table_user"></div>
+</body>
+</html>
