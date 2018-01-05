@@ -79,6 +79,7 @@ function loadBrand() {
             st.setModify("onModBrand");
             st.setDelete("onDelBrand");
             st.setHeader([document.title]);
+            st.setPage(15, 12);
             $.each(brand, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });

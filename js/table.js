@@ -5,6 +5,8 @@ function SmartTable() {
     this.ths = null;
     this.ids = [];
     this.trs = [];
+    this.pageTotal = 0;
+    this.pageCur = 0;
 
     this.setOrder = function(fnOrder) {
         this.fnOrder = fnOrder;
@@ -27,10 +29,53 @@ function SmartTable() {
         this.trs.push(td);
     };
 
+    this.setPage = function(pageTotal, pageCur) {
+        this.pageTotal = pageTotal;
+        this.pageCur = pageCur;
+    };
+
     this.getTable = function() {
         var i = 0,
             j = 0;
-        var html = "<table id='edittable'>";
+        var html = "";
+
+        if (this.pageTotal > 0) {
+            html += "<div id='gotoPage'>";
+            var pageMax = 10;
+            var pageTotal = this.pageTotal;
+            if (pageTotal > pageMax) {
+                pageTotal = pageMax;
+            }
+            var from = 1,
+                to = this.pageTotal;
+            var l = this.pageCur - from,
+                r = to - this.pageCur;
+            if (l < r) {
+                if (l > pageMax / 2) {
+                    from = this.pageCur - pageMax / 2;
+                    to = this.pageCur + pageMax / 2;
+                } else {
+                    to = this.pageCur + pageMax - l;
+                }
+            } else {
+                if (r > pageMax / 2) {
+                    from = this.pageCur - pageMax / 2;
+                    to = this.pageCur + pageMax / 2;
+                } else {
+                    from = this.pageCur - (pageMax - r);
+                }
+            }
+            for (i = from; i < this.pageCur; i++) {
+                html += "<span class='page'>" + i + "</span>&nbsp;";
+            }
+            html += "<span class='pagecurrent'>" + this.pageCur + "</span>";
+            for (i = this.pageCur + 1; i <= to; i++) {
+                html += "&nbsp;<span class='page'>" + i + "</span>";
+            }
+            html += "</div>";
+        }
+
+        html += "<table id='edittable'>";
         if (this.ths !== null || this.modify || this.delete) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
