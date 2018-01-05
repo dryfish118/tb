@@ -24,7 +24,7 @@
                 success: function(data, textStatus) {
                     var id = parseInt(data);
                     if (id != -1) {
-                        $.cookie("cookie_user", id);
+                        $.cookie("cookie_login", id);
                         document.location.href = "./dxx.htm";
                         return true;
                     }

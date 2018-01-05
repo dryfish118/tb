@@ -8,9 +8,8 @@
     <link rel="stylesheet" type="text/css" href="./css/table.css" />
     <script type="text/javascript" src="./js/jquery.min.js"></script>
     <script type="text/javascript" src="./js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="./js/table.js"></script>
     <script type="text/javascript">
-        var user = $.cookie("cookie_user");
+        var user = $.cookie("cookie_login");
         if (typeof(user) == "undefined" || user == null || user == "null") {
             document.location.href = "./login.htm";
         }
@@ -26,7 +25,7 @@
                 var page = $(this).attr("id");
                 if (page != "") {
                     if (page == "login") {
-                        $.cookie("cookie_user", null);
+                        $.cookie("cookie_login", null);
                         $.cookie("cookie_page", null);
                         document.location.href = "./login.htm";
                     } else {

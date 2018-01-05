@@ -1,44 +1,30 @@
+function callLoad(page) {
+    var fun = eval("load" + page.substring(0, 1).toUpperCase() + page.substring(1));
+    if (fun) {
+        fun();
+    }
+}
+
+function loadPage(page) {
+    var c = $.cookie("cookie_" + page);
+    if (typeof(c) == "undefined" || c == null || c == "null") {
+        $.getScript("./js/" + page + ".js", function(data, textStatus, jqXHR) {
+            $.cookie("cookie_" + page, 1);
+            callLoad(page);
+        });
+    } else {
+        callLoad(page);
+    }
+}
+
 function loadMain(page) {
-    switch (page) {
-        case "user":
-            $.getScript("./js/user.js", function(data, textStatus, jqXHR) {
-                loadUser();
-            });
-            break;
-        case "issue":
-            $.getScript("./js/issue.js", function(data, textStatus, jqXHR) {
-                loadIssue();
-            });
-            break;
-        case "brand":
-            $.getScript("./js/brand.js", function(data, textStatus, jqXHR) {
-                loadBrand();
-            });
-            break;
-        case "size":
-            $.getScript("./js/size.js", function(data, textStatus, jqXHR) {
-                loadSize();
-            });
-            break;
-        case "color":
-            $.getScript("./js/color.js", function(data, textStatus, jqXHR) {
-                loadColor();
-            });
-            break;
-        case "cat":
-            $.getScript("./js/cat.js", function(data, textStatus, jqXHR) {
-                loadCat();
-            });
-            break;
-        case "client":
-            $.getScript("./js/client.js", function(data, textStatus, jqXHR) {
-                loadClient();
-            });
-            break;
-        case "history":
-            $.getScript("./js/history.js", function(data, textStatus, jqXHR) {
-                loadHistory();
-            });
-            break;
+    var table = $.cookie("cookie_table");
+    if (typeof(table) == "undefined" || table == null || table == "null") {
+        $.getScript("./js/table.js", function(data, textStatus, jqXHR) {
+            $.cookie("cookie_table", 1);
+            loadPage(page);
+        });
+    } else {
+        loadPage(page);
     }
 }
