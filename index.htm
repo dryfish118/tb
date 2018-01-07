@@ -1,42 +1,50 @@
-﻿<?php require_once("sort_help.php") ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<style type="text/css">
-<!--
-body{
- text-align: center;
-}
--->
-</style>
-<script type="text/javascript">
-	self.setInterval("changeImg()", 5000);
-	function changeImg()
-	{
-		var imgBaby = document.getElementById("imgBaby");
-		var src = imgBaby.src;
-		var idx = parseInt(src.substr(src.length - 6, 2), 10);
-		idx++;
-		if (idx == 14)
-		{
-			idx = 1;
-		}
-		if (idx < 10)
-		{
-			src = "0" + idx;
-		}
-		else
-		{
-			src = idx;
-		}
-		src = "./duoduo/" + src + ".jpg";
-		imgBaby.src = src;
-	}
-</script>
-<title>多宝宝</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="zh-cn" />
+    <link rel="stylesheet" type="text/css" href="./css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="./css/table.css" />
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var dt = new Date();
+            var url = "./js/dxx.js?v=" + dt.getMinutes() + dt.getSeconds();
+            $.getScript(url, function(data, textStatus, jqXHR) {
+                loadMain();
+            });
+        });
+    </script>
+    <title>dxx</title>
 </head>
+
 <body>
-<img id="imgBaby" src="./duoduo/01.jpg" onclick="changeImg()" />
+    <div id="nav">
+        <ul id="menu">
+            <li id="user">人员</li>
+            <li id="issue">条目</li>
+            <li id="brand">品牌</li>
+            <li id="size">尺寸</li>
+            <li id="color">颜色</li>
+            <li id="cat">类别</li>
+            <li id="client">客户</li>
+            <li id="flow">流水</li>
+            <li id="goods">商品</li>
+            <li id="stock">进货</li>
+            <li id="sell">销售</li>
+            <li id="querystock">进货查询</li>
+            <li id="queryreserve">库存查询</li>
+            <li id="queryincome">收支查询</li>
+            <li id="querysell">销售查询</li>
+            <li id="sendip">系统</li>
+            <li id="history">历史</li>
+            <li id="diary">日志</li>
+            <li id="login">注销</li>
+        </ul>
+    </div>
+    <div id="main"></div>
 </body>
+
 </html>
