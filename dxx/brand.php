@@ -8,13 +8,36 @@ if ($fuser == 0 || $faction == "") {
 
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+$fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
+$fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
 switch ($faction) {
     case "list" : {
+        $pages = 0;
+        if ($fcount > 0 && $fcurrent > 0) {
+            $sql = "select count(*) as t from brand";
+            $rs = $conn->query($sql);
+            if ($rs) {
+                $row= $rs->fetch_assoc();
+                $total = $row["t"];
+                if ($total > 0) {
+                    $pages = (int)($total / $fcount);
+                    if ($total % $fcount) {
+                        $pages++;
+                    }
+                    if ($fcurrent > $pages) {
+                        $fcurrent  = $pages;
+                    }
+                }
+            }
+        }
         $sql = "select * from brand order by brand_id";
+        if ($fcount > 0 && $fcurrent > 0) {
+            $sql = $sql . " limit " . (($fcurrent - 1) * $fcount) . "," . $fcount;
+        }
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
-            $json = "{\"brand\":[";
+            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"brand\":[";
             while ($row = $rs->fetch_assoc()) {
                 if ($count) {
                     $json .= ",";

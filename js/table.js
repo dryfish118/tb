@@ -30,8 +30,8 @@ function SmartTable() {
     };
 
     this.setPage = function(pageTotal, pageCur) {
-        this.pageTotal = pageTotal;
-        this.pageCur = pageCur;
+        this.pageTotal = parseInt(pageTotal);
+        this.pageCur = parseInt(pageCur);
     };
 
     this.getTable = function() {
@@ -41,7 +41,7 @@ function SmartTable() {
 
         if (this.pageTotal > 0) {
             html += "<div id='gotoPage'>";
-            var pageMax = 10;
+            var pageMax = 6;
             var pageTotal = this.pageTotal;
             if (pageTotal > pageMax) {
                 pageTotal = pageMax;
@@ -65,12 +65,18 @@ function SmartTable() {
                     from = this.pageCur - (pageMax - r);
                 }
             }
+            if (from > 1) {
+                html += "<span class='page' id='firstpage'>&lt;&lt;</span>&nbsp;";
+            }
             for (i = from; i < this.pageCur; i++) {
                 html += "<span class='page'>" + i + "</span>&nbsp;";
             }
             html += "<span class='pagecurrent'>" + this.pageCur + "</span>";
             for (i = this.pageCur + 1; i <= to; i++) {
                 html += "&nbsp;<span class='page'>" + i + "</span>";
+            }
+            if (to < this.pageTotal) {
+                html += "&nbsp;<span class='page' id='lastpage'>&gt;&gt;</span>";
             }
             html += "</div>";
         }

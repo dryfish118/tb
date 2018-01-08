@@ -1,3 +1,6 @@
+var pageCurrent = 1;
+var pageCount = 10;
+
 function onModBrand(row) {
     var $tr = $("#edittable tr").eq(row + 1);
     var fid = $tr.attr("value");
@@ -68,19 +71,20 @@ function loadBrand() {
         cache: false,
         data: {
             "fuser": $.cookie("cookie_user"),
-            "faction": "list"
+            "faction": "list",
+            "fcurrent": pageCurrent,
+            "fcount": pageCount,
         },
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var brand = data.brand;
 
             var st = new SmartTable();
             st.setModify("onModBrand");
             st.setDelete("onDelBrand");
             st.setHeader([document.title]);
-            st.setPage(15, 12);
-            $.each(brand, function(i, item) {
+            st.setPage(data.pages, data.current);
+            $.each(data.brand, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
 
@@ -91,7 +95,19 @@ function loadBrand() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form>" +
                 "<div>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            $("#main").html(html);
+
+            $(".page").click(function() {
+                var txt = $(this).text();
+                if (txt == "<<") {
+                    pageCurrent = 1;
+                } else if (txt == ">>") {
+                    pageCurrent = data.pages;
+                } else {
+                    pageCurrent = parseInt(txt);
+                }
+                loadBrand();
+            });
         }
     });
 }
