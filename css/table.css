@@ -37,10 +37,7 @@ table#edittable tr:nth-child(even) {
     background-color: #fdfdfd;
 }
 
-table#edittable .top,
-.bottom,
-.up,
-.down,
+table#edittable .order,
 .mod,
 .del {
     cursor: pointer;

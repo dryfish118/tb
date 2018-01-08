@@ -1,60 +1,3 @@
-function onOrderSize(row, ftype) {
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $("#fid").attr("value", fid);
-    $.ajax({
-        type: "POST",
-        url: "./dxx/size.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": ftype,
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadSize();
-            }
-        }
-    });
-}
-
-function onModSize(row) {
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    var fname = $tr.children("td").eq(0).text();
-    $("#faction").attr("value", "update");
-    $("#fid").attr("value", fid);
-    $("#fname").val(fname);
-}
-
-function onDelSize(row) {
-    if (!confirm("确定要删除吗？")) {
-        return;
-    }
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/size.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": "delete",
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadSize();
-            }
-        }
-    });
-}
-
 function onSize() {
     var fuser = $.cookie("cookie_user");
     var faction = $("#faction").attr("value");
@@ -96,14 +39,11 @@ function loadSize() {
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var size = data.size;
-
             var st = new SmartTable();
-            st.setOrder("onOrderSize");
-            st.setModify("onModSize");
-            st.setDelete("onDelSize");
+            st.setOrder();
+            st.setEdit();
             st.setHeader([document.title]);
-            $.each(size, function(i, item) {
+            $.each(data.size, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
 
@@ -114,7 +54,64 @@ function loadSize() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form>" +
                 "<div>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            $("#main").html(html);
+
+            $(".order").click(function() {
+                var fuser = $.cookie("cookie_user");
+                var faction = $(this).attr("value");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/size.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": faction,
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadSize();
+                        }
+                    }
+                });
+            });
+
+            $(".mod").click(function() {
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                var fname = $tr.children("td").eq(0).text();
+                $("#faction").attr("value", "update");
+                $("#fid").attr("value", fid);
+                $("#fname").val(fname);
+            });
+
+            $(".del").click(function() {
+                if (!confirm("确定要删除吗？")) {
+                    return;
+                }
+                var fuser = $.cookie("cookie_user");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/size.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": "delete",
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadSize();
+                        }
+                    }
+                });
+            });
         }
     });
 }

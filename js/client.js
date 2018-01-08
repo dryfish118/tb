@@ -1,47 +1,5 @@
-function onModClient(row) {
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    var $td = $tr.children("td");
-    var fname = $td.eq(0).text();
-    var ftaobao = $td.eq(1).text();
-    var ftel = $td.eq(2).text();
-    var ftel2 = $td.eq(3).text();
-    var faddr = $td.eq(4).text();
-    var fcode = $td.eq(5).text();
-    $("#faction").attr("value", "update");
-    $("#fid").attr("value", fid);
-    $("#fname").val(fname);
-    $("#ftaobao").val(ftaobao);
-    $("#ftel").val(ftel);
-    $("#ftel2").val(ftel2);
-    $("#faddr").val(faddr);
-    $("#fcode").val(fcode);
-}
-
-function onDelClient(row) {
-    if (!confirm("确定要删除吗？")) {
-        return;
-    }
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/client.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": "delete",
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadClient();
-            }
-        }
-    });
-}
+var pageCurrent = 1;
+var pageCount = 10;
 
 function onClient() {
     var fuser = $.cookie("cookie_user");
@@ -89,18 +47,18 @@ function loadClient() {
         cache: false,
         data: {
             "fuser": $.cookie("cookie_user"),
-            "faction": "list"
+            "faction": "list",
+            "fcurrent": pageCurrent,
+            "fcount": pageCount,
         },
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var client = data.client;
-
             var st = new SmartTable();
-            st.setModify("onModClient");
-            st.setDelete("onDelClient");
+            st.setPage(data.pages, data.current);
+            st.setEdit();
             st.setHeader([document.title, "淘宝名", "手机", "座机", "地址", "邮编"]);
-            $.each(client, function(i, item) {
+            $.each(data.client, function(i, item) {
                 st.addRow(item.id, [item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
             });
 
@@ -116,7 +74,64 @@ function loadClient() {
                 "<div><input type='submit' /><input type='reset' /></div>" +
                 "</form>" +
                 "<div>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            $("#main").html(html);
+
+            $(".page").click(function() {
+                var txt = $(this).text();
+                if (txt == "<<") {
+                    pageCurrent = 1;
+                } else if (txt == ">>") {
+                    pageCurrent = data.pages;
+                } else {
+                    pageCurrent = parseInt(txt);
+                }
+                loadClient();
+            });
+
+            $(".mod").click(function() {
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                var $td = $tr.children("td");
+                var fname = $td.eq(0).text();
+                var ftaobao = $td.eq(1).text();
+                var ftel = $td.eq(2).text();
+                var ftel2 = $td.eq(3).text();
+                var faddr = $td.eq(4).text();
+                var fcode = $td.eq(5).text();
+                $("#faction").attr("value", "update");
+                $("#fid").attr("value", fid);
+                $("#fname").val(fname);
+                $("#ftaobao").val(ftaobao);
+                $("#ftel").val(ftel);
+                $("#ftel2").val(ftel2);
+                $("#faddr").val(faddr);
+                $("#fcode").val(fcode);
+            });
+
+            $(".del").click(function() {
+                if (!confirm("确定要删除吗？")) {
+                    return;
+                }
+                var fuser = $.cookie("cookie_user");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/client.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": "delete",
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadClient();
+                        }
+                    }
+                });
+            });
         }
     });
 }

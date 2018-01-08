@@ -1,37 +1,3 @@
-function onModUser(row) {
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    var fname = $tr.children("td").eq(0).text();
-    $("#faction").attr("value", "update");
-    $("#fid").attr("value", fid);
-    $("#fname").val(fname);
-}
-
-function onDelUser(row) {
-    if (!confirm("确定要删除吗？")) {
-        return;
-    }
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/user.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": "delete",
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadUser();
-            }
-        }
-    });
-}
-
 function onUser() {
     var fuser = $.cookie("cookie_user");
     var faction = $("#faction").attr("value");
@@ -73,13 +39,10 @@ function loadUser() {
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var user = data.user;
-
             var st = new SmartTable();
-            st.setModify("onModUser");
-            st.setDelete("onDelUser");
+            st.setEdit();
             st.setHeader([document.title]);
-            $.each(user, function(i, item) {
+            $.each(data.user, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
 
@@ -90,7 +53,41 @@ function loadUser() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form>" +
                 "<div>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            $("#main").html(html);
+
+            $(".mod").click(function() {
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                var fname = $tr.children("td").eq(0).text();
+                $("#faction").attr("value", "update");
+                $("#fid").attr("value", fid);
+                $("#fname").val(fname);
+            });
+
+            $(".del").click(function() {
+                if (!confirm("确定要删除吗？")) {
+                    return;
+                }
+                var fuser = $.cookie("cookie_user");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/user.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": "delete",
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadUser();
+                        }
+                    }
+                });
+            });
         }
     });
 }

@@ -1,23 +1,15 @@
 function SmartTable() {
-    this.fnOrder = null;
-    this.fnMod = null;
-    this.fnDel = null;
+    this.pageTotal = 0;
+    this.pageCur = 0;
     this.ths = null;
     this.ids = [];
     this.trs = [];
-    this.pageTotal = 0;
-    this.pageCur = 0;
+    this.hasOrder = false;
+    this.hasEdit = false;
 
-    this.setOrder = function(fnOrder) {
-        this.fnOrder = fnOrder;
-    };
-
-    this.setModify = function(fnMod) {
-        this.fnMod = fnMod;
-    };
-
-    this.setDelete = function(fnDel) {
-        this.fnDel = fnDel;
+    this.setPage = function(pageTotal, pageCur) {
+        this.pageTotal = parseInt(pageTotal);
+        this.pageCur = parseInt(pageCur);
     };
 
     this.setHeader = function(ths) {
@@ -29,9 +21,12 @@ function SmartTable() {
         this.trs.push(td);
     };
 
-    this.setPage = function(pageTotal, pageCur) {
-        this.pageTotal = parseInt(pageTotal);
-        this.pageCur = parseInt(pageCur);
+    this.setOrder = function() {
+        this.hasOrder = true;
+    };
+
+    this.setEdit = function() {
+        this.hasEdit = true;
     };
 
     this.getTable = function() {
@@ -66,7 +61,7 @@ function SmartTable() {
                 }
             }
             if (from > 1) {
-                html += "<span class='page' id='firstpage'>&lt;&lt;</span>&nbsp;";
+                html += "<span class='page'>&lt;&lt;</span>&nbsp;";
             }
             for (i = from; i < this.pageCur; i++) {
                 html += "<span class='page'>" + i + "</span>&nbsp;";
@@ -76,21 +71,21 @@ function SmartTable() {
                 html += "&nbsp;<span class='page'>" + i + "</span>";
             }
             if (to < this.pageTotal) {
-                html += "&nbsp;<span class='page' id='lastpage'>&gt;&gt;</span>";
+                html += "&nbsp;<span class='page'>&gt;&gt;</span>";
             }
             html += "</div>";
         }
 
         html += "<table id='edittable'>";
-        if (this.ths !== null || this.modify || this.delete) {
+        if (this.ths !== null || this.hasOrder || this.hasEdit) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
                 html += "<th>" + this.ths[i] + "</th>";
             }
-            if (this.fnOrder) {
+            if (this.hasOrder) {
                 html += "<th>" + "排序" + "</th>";
             }
-            if (this.fnMod || this.fnDel) {
+            if (this.hasEdit) {
                 html += "<th>" + "操作" + "</th>";
             }
             html += "</tr>";
@@ -101,38 +96,19 @@ function SmartTable() {
                 for (j = 0; j < this.trs[i].length; j++) {
                     html += "<td>" + this.trs[i][j] + "</td>";
                 }
-                if (this.fnOrder) {
-                    html += "<td>";
-                    html += "<span class='top' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", \"top\")'" +
-                        ">顶</span>&nbsp;";
-                    html += "<span class='bottom' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", \"bottom\")'" +
-                        ">底</span>&nbsp;";
-                    html += "<span class='up' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", \"up\")'" +
-                        ">上</span>&nbsp;";
-                    html += "<span class='down' " +
-                        "onclick='" + this.fnOrder + "(" + i + ", \"down\")'" +
-                        ">下</span>";
-                    html += "</td>";
+                if (this.hasOrder) {
+                    html += "<td>" +
+                        "<span class='order' value='top'>顶</span>&nbsp;" +
+                        "<span class='order' value='bottom'>底</span>&nbsp;" +
+                        "<span class='order' value='up'>上</span>&nbsp;" +
+                        "<span class='order' value='down'>下</span>" +
+                        "</td>";
                 }
-                if (this.fnMod || this.fnDel) {
-                    html += "<td>";
-                    if (this.fnMod) {
-                        html += "<span class='mod' " +
-                            "onclick='" + this.fnMod + "(" + i + ")'" +
-                            ">改</span>";
-                    }
-                    if (this.fnDel) {
-                        if (this.fnMod) {
-                            html += "&nbsp;";
-                        }
-                        html += "<span class='del' " +
-                            "onclick='" + this.fnDel + "(" + i + ")'" +
-                            ">删</span>";
-                    }
-                    html += "</td>";
+                if (this.hasEdit) {
+                    html += "<td>" +
+                        "<span class='mod'>改</span>&nbsp;" +
+                        "<span class='del'>删</span>" +
+                        "</td>";
                 }
                 html += "</tr>";
             }

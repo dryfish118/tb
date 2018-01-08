@@ -1,40 +1,6 @@
 var pageCurrent = 1;
 var pageCount = 10;
 
-function onModBrand(row) {
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    var fname = $tr.children("td").eq(0).text();
-    $("#faction").attr("value", "update");
-    $("#fid").attr("value", fid);
-    $("#fname").val(fname);
-}
-
-function onDelBrand(row) {
-    if (!confirm("确定要删除吗？")) {
-        return;
-    }
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/brand.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": "delete",
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadBrand();
-            }
-        }
-    });
-}
-
 function onBrand() {
     var fuser = $.cookie("cookie_user");
     var faction = $("#faction").attr("value");
@@ -78,12 +44,10 @@ function loadBrand() {
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-
             var st = new SmartTable();
-            st.setModify("onModBrand");
-            st.setDelete("onDelBrand");
-            st.setHeader([document.title]);
             st.setPage(data.pages, data.current);
+            st.setEdit();
+            st.setHeader([document.title]);
             $.each(data.brand, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
@@ -107,6 +71,40 @@ function loadBrand() {
                     pageCurrent = parseInt(txt);
                 }
                 loadBrand();
+            });
+
+            $(".mod").click(function() {
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                var fname = $tr.children("td").eq(0).text();
+                $("#faction").attr("value", "update");
+                $("#fid").attr("value", fid);
+                $("#fname").val(fname);
+            });
+
+            $(".del").click(function() {
+                if (!confirm("确定要删除吗？")) {
+                    return;
+                }
+                var fuser = $.cookie("cookie_user");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/brand.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": "delete",
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadBrand();
+                        }
+                    }
+                });
             });
         }
     });

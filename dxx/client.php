@@ -13,13 +13,36 @@ $ftel = isset($_POST["ftel"]) ? $_POST["ftel"] : "";
 $ftel2 = isset($_POST["ftel2"]) ? $_POST["ftel2"] : "";
 $faddr = isset($_POST["faddr"]) ? $_POST["faddr"] : "";
 $fcode = isset($_POST["fcode"]) ? $_POST["fcode"] : "";
+$fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
+$fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
 switch ($faction) {
     case "list" : {
-        $sql = "select * from client order by client_id limit 0,10";
+        $pages = 0;
+        if ($fcount > 0 && $fcurrent > 0) {
+            $sql = "select count(*) as t from client";
+            $rs = $conn->query($sql);
+            if ($rs) {
+                $row= $rs->fetch_assoc();
+                $total = $row["t"];
+                if ($total > 0) {
+                    $pages = (int)($total / $fcount);
+                    if ($total % $fcount) {
+                        $pages++;
+                    }
+                    if ($fcurrent > $pages) {
+                        $fcurrent  = $pages;
+                    }
+                }
+            }
+        }
+        $sql = "select * from client order by client_id";
+        if ($fcount > 0 && $fcurrent > 0) {
+            $sql = $sql . " limit " . (($fcurrent - 1) * $fcount) . "," . $fcount;
+        }
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
-            $json = "{\"client\":[";
+            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"client\":[";
             while ($row = $rs->fetch_assoc()) {
                 if ($count) {
                     $json .= ",";

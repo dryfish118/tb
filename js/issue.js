@@ -1,39 +1,3 @@
-function onModIssue(row) {
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    var fname = $tr.children("td").eq(0).text();
-    var fout = $tr.children("td").eq(1).text();
-    $("#faction").attr("value", "update");
-    $("#fid").attr("value", fid);
-    $("#fname").val(fname);
-    $("#fout").prop("checked", fout == "1" ? true : false);
-}
-
-function onDelIssue(row) {
-    if (!confirm("确定要删除吗？")) {
-        return;
-    }
-    var fuser = $.cookie("cookie_user");
-    var $tr = $("#edittable tr").eq(row + 1);
-    var fid = $tr.attr("value");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/issue.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": "delete",
-            "fid": fid
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadIssue();
-            }
-        }
-    });
-}
-
 function onIssue() {
     var fuser = $.cookie("cookie_user");
     var faction = $("#faction").attr("value");
@@ -77,13 +41,10 @@ function loadIssue() {
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var issue = data.issue;
-
             var st = new SmartTable();
-            st.setModify("onModIssue");
-            st.setDelete("onDelIssue");
+            st.setEdit();
             st.setHeader([document.title, "收支"]);
-            $.each(issue, function(i, item) {
+            $.each(data.issue, function(i, item) {
                 st.addRow(item.id, [item.name, item.out]);
             });
 
@@ -95,7 +56,43 @@ function loadIssue() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form>" +
                 "<div>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            $("#main").html(html);
+
+            $(".mod").click(function() {
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                var fname = $tr.children("td").eq(0).text();
+                var fout = $tr.children("td").eq(1).text();
+                $("#faction").attr("value", "update");
+                $("#fid").attr("value", fid);
+                $("#fname").val(fname);
+                $("#fout").prop("checked", fout == "1" ? true : false);
+            });
+
+            $(".del").click(function() {
+                if (!confirm("确定要删除吗？")) {
+                    return;
+                }
+                var fuser = $.cookie("cookie_user");
+                var $tr = $(this).parent().parent();
+                var fid = $tr.attr("value");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/issue.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": "delete",
+                        "fid": fid
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadIssue();
+                        }
+                    }
+                });
+            });
         }
     });
 }
