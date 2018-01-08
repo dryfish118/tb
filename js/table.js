@@ -34,7 +34,7 @@ function SmartTable() {
             j = 0;
         var html = "";
 
-        if (this.pageTotal > 0) {
+        if (this.pageTotal > 1) {
             html += "<div id='gotoPage'>";
             var pageMax = 6;
             var pageTotal = this.pageTotal;
@@ -73,10 +73,16 @@ function SmartTable() {
             if (to < this.pageTotal) {
                 html += "&nbsp;<span class='page'>&gt;&gt;</span>";
             }
+            if (pageMax < this.pageTotal) {
+                html += "&nbsp;<span>" +
+                    "<input type='text' id='fpage' " +
+                    "min='1' max='" + this.pageTotal + "' " +
+                    "value='" + this.pageCur + "' /></span>";
+            }
             html += "</div>";
         }
 
-        html += "<table id='edittable'>";
+        html += "<div><table id='edittable'>";
         if (this.ths !== null || this.hasOrder || this.hasEdit) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
@@ -113,7 +119,7 @@ function SmartTable() {
                 html += "</tr>";
             }
         }
-        html += "</table>";
+        html += "</table></div>";
         return html;
     };
 }

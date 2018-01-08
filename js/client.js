@@ -24,7 +24,7 @@ function loadClient() {
                 st.addRow(item.id, [item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
             });
 
-            var html = "<form id='editform'" +
+            var html = "<div><form id='editform'" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<div><label>" + document.title + "</label><input type='text' id='fname' /></div>" +
@@ -34,13 +34,19 @@ function loadClient() {
                 "<div><label>地址</label><input type='text' id='faddr' /></div>" +
                 "<div><label>邮编</label><input type='text' id='fcode' /></div>" +
                 "<div><input type='submit' /><input type='reset' /></div>" +
-                "</form>" +
-                "<div>" + st.getTable() + "</div>";
+                "</form></div>" + st.getTable();
             $("#main").html(html);
 
             $(".page").click(function() {
                 pageCurrent = onPage($(this).text(), data.pages);
                 loadClient();
+            });
+
+            $("#fpage").bind("keypress", function(event) {
+                if (event.keyCode == "13") {
+                    pageCurrent = onPage($(this).val(), data.pages);
+                    loadClient();
+                }
             });
 
             $(".mod").click(function() {

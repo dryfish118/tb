@@ -1,4 +1,5 @@
 div#gotoPage {
+    left: 10px;
     width: 100%;
     list-style: none;
     color: blue;
@@ -7,6 +8,11 @@ div#gotoPage {
 div#gotoPage .page {
     cursor: pointer;
     text-decoration: underline;
+}
+
+div#gotoPage #fpage {
+    border: 1px solid;
+    width: 20px;
 }
 
 table#edittable table {

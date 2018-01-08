@@ -19,13 +19,12 @@ function loadSize() {
                 st.addRow(item.id, [item.name]);
             });
 
-            var html = "<form id='editform'>" +
+            var html = "<div><form id='editform'>" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<label>" + document.title + "</label><input type='text' id='fname' />" +
                 "<input type='submit' /><input type='reset' />" +
-                "</form>" +
-                "<div>" + st.getTable() + "</div>";
+                "</form></div>" + st.getTable();
             $("#main").html(html);
 
             $(".order").click(function() {

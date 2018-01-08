@@ -18,14 +18,13 @@ function loadIssue() {
                 st.addRow(item.id, [item.name, item.out]);
             });
 
-            var html = "<form id='editform'>" +
+            var html = "<div><form id='editform'>" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<label>" + document.title + "</label><input type='text' id='fname' />" +
                 "<label>支出：</label><input type='checkbox' id='fout' CHECKED />" +
                 "<input type='submit' /><input type='reset' />" +
-                "</form>" +
-                "<div>" + st.getTable() + "</div>";
+                "</form></div>" + st.getTable();
             $("#main").html(html);
 
             $(".mod").click(function() {
