@@ -15,6 +15,13 @@
         return $conn->query($sql) ? 1 : 0;
     }
 
+    function trimReturn($str) {
+        $str = trim($str, "\r\n ");
+        $str = str_replace("\r", " ", $str);
+        $str = str_replace("\n", " ", $str);
+        return $str;
+    }
+
     function toTop($page) {
         global $conn;
         if (isset($_POST["fid"]) && $_POST["fid"] > 0) {

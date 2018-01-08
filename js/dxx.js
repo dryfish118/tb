@@ -78,6 +78,41 @@ function onLogin() {
     return false;
 }
 
+function onPage(txt, pages) {
+    var page = 1;
+    if (txt === "<<") {
+        page = 1;
+    } else if (txt === ">>") {
+        page = pages;
+    } else {
+        page = parseInt(txt);
+    }
+    return page;
+}
+
+function onDel(strUrl, fid, fnLoad) {
+    if (!confirm("确定要删除吗？")) {
+        return;
+    }
+    var fuser = $.cookie("cookie_user");
+    $.ajax({
+        type: "POST",
+        url: strUrl,
+        cache: false,
+        data: {
+            "fuser": fuser,
+            "faction": "delete",
+            "fid": fid
+        },
+        dataType: "text",
+        success: function(data, textStatus) {
+            if (parseInt(data) == 1) {
+                fnLoad();
+            }
+        }
+    });
+}
+
 $("#menu li").click(function() {
     var user = $.cookie("cookie_login");
     if (typeof(user) == "undefined" || user === null || user == "null") {

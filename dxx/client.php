@@ -49,12 +49,12 @@ switch ($faction) {
                 }
                 $count++;
 				$json .= "{\"id\":" . $row["client_id"] . 
-					",\"name\":\"" . $row["client_name"] . 
-					"\",\"taobao\":\"" . $row["client_taobao"] . 
-					"\",\"tel\":\"" . $row["client_tel"] . 
-					"\",\"tel2\":\"" . $row["client_tel2"] . 
-					"\",\"addr\":\"" . $row["client_addr"] . 
-					"\",\"code\":\"" . $row["client_code"] . "\"}";
+					",\"name\":\"" . trimReturn($row["client_name"]) . 
+					"\",\"taobao\":\"" . trimReturn($row["client_taobao"]) . 
+					"\",\"tel\":\"" . trimReturn($row["client_tel"]) . 
+					"\",\"tel2\":\"" . trimReturn($row["client_tel2"]) . 
+					"\",\"addr\":\"" . trimReturn($row["client_addr"]) . 
+					"\",\"code\":\"" . trimReturn($row["client_code"]) . "\"}";
             }
             $json .= "]}";
             $rs->free();

@@ -89,28 +89,7 @@ function loadSize() {
             });
 
             $(".del").click(function() {
-                if (!confirm("确定要删除吗？")) {
-                    return;
-                }
-                var fuser = $.cookie("cookie_user");
-                var $tr = $(this).parent().parent();
-                var fid = $tr.attr("value");
-                $.ajax({
-                    type: "POST",
-                    url: "./dxx/size.php",
-                    cache: false,
-                    data: {
-                        "fuser": fuser,
-                        "faction": "delete",
-                        "fid": fid
-                    },
-                    dataType: "text",
-                    success: function(data, textStatus) {
-                        if (parseInt(data) == 1) {
-                            loadSize();
-                        }
-                    }
-                });
+                onDel("./dxx/size.php", $(this).parent().parent().attr("value"), loadSize);
             });
         }
     });
