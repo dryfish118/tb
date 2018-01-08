@@ -1,3 +1,6 @@
+var pageCurrent = 1;
+var pageCount = 10;
+
 function loadHistory() {
     document.title = "历史";
     $.ajax({
@@ -6,21 +9,34 @@ function loadHistory() {
         cache: false,
         data: {
             "fuser": $.cookie("cookie_user"),
-            "faction": "list"
+            "faction": "list",
+            "fcurrent": pageCurrent,
+            "fcount": pageCount,
         },
         dataType: "text",
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
-            var history = data.history;
-
             var st = new SmartTable();
+            st.setPage(data.pages, data.current);
             st.setHeader(["人员", "时间", "内容"]);
-            $.each(history, function(i, item) {
+            $.each(data.history, function(i, item) {
                 st.addRow(item.id, [item.user, item.time, item.contents]);
             });
 
-            var html = "<div id='edittable'>" + st.getTable() + "</div>";
-            $('#main').html(html);
+            var html = st.getTable();
+            $("#main").html(html);
+
+            $(".page").click(function() {
+                pageCurrent = onPage($(this).text(), data.pages);
+                loadHistory();
+            });
+
+            $("#fpage").bind("keypress", function(event) {
+                if (event.keyCode == "13") {
+                    pageCurrent = onPage($(this).val(), data.pages);
+                    loadHistory();
+                }
+            });
         }
     });
 }
