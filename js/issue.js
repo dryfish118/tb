@@ -1,33 +1,3 @@
-function onIssue() {
-    var fuser = $.cookie("cookie_user");
-    var faction = $("#faction").attr("value");
-    var fid = $("#fid").attr("value");
-    var fname = $("#fname").val();
-    var fout = $("#fout").prop("checked") ? 1 : 0;
-    $("#faction").attr("value", "add");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/issue.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": faction,
-            "fid": fid,
-            "fname": fname,
-            "fout": fout
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadIssue();
-                return true;
-            }
-        }
-    });
-
-    return false;
-}
-
 function loadIssue() {
     document.title = "条目";
     $.ajax({
@@ -48,7 +18,7 @@ function loadIssue() {
                 st.addRow(item.id, [item.name, item.out]);
             });
 
-            var html = "<form id='editform' onsubmit='return onIssue();'>" +
+            var html = "<form id='editform'>" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<label>" + document.title + "</label><input type='text' id='fname' />" +
@@ -71,6 +41,36 @@ function loadIssue() {
 
             $(".del").click(function() {
                 onDel("./dxx/issue.php", $(this).parent().parent().attr("value"), loadIssue);
+            });
+
+            $("#editform").submit(function() {
+                var fuser = $.cookie("cookie_user");
+                var faction = $("#faction").attr("value");
+                var fid = $("#fid").attr("value");
+                var fname = $("#fname").val();
+                var fout = $("#fout").prop("checked") ? 1 : 0;
+                $("#faction").attr("value", "add");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/issue.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": faction,
+                        "fid": fid,
+                        "fname": fname,
+                        "fout": fout
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadIssue();
+                            return true;
+                        }
+                    }
+                });
+
+                return false;
             });
         }
     });

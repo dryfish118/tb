@@ -36,10 +36,36 @@ function loadMain() {
     var user = $.cookie("cookie_login");
     if (typeof(user) == "undefined" || user === null || user == "null") {
         document.title = "登录";
-        var html = "<form onsubmit='return onLogin();'>" +
+        var html = "<form id='loginform'>" +
             "<label>人员：</label><input type='text' id='fname' />" +
             "<input type='submit' value='登录' /></form>";
         $('#main').html(html);
+
+        $("#loginform").submit(function() {
+            var name = $("#fname").val();
+            if (name === "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: "./dxx/user.php",
+                cache: false,
+                data: {
+                    "faction": "login",
+                    "fname": name
+                },
+                dataType: "text",
+                success: function(data, textStatus) {
+                    var id = parseInt(data);
+                    if (id != -1) {
+                        $.cookie("cookie_login", id);
+                        loadMain();
+                        return true;
+                    }
+                }
+            });
+            return false;
+        });
     } else {
         $.getScript("./js/table.js", function(data, textStatus, jqXHR) {
             $.cookie("cookie_table", 1);
@@ -50,32 +76,6 @@ function loadMain() {
             loadPage(page);
         });
     }
-}
-
-function onLogin() {
-    var name = $("#fname").val();
-    if (name === "") {
-        return false;
-    }
-    $.ajax({
-        type: "POST",
-        url: "./dxx/user.php",
-        cache: false,
-        data: {
-            "faction": "login",
-            "fname": name
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            var id = parseInt(data);
-            if (id != -1) {
-                $.cookie("cookie_login", id);
-                loadMain();
-                return true;
-            }
-        }
-    });
-    return false;
 }
 
 function onPage(txt, pages) {

@@ -1,44 +1,6 @@
 var pageCurrent = 1;
 var pageCount = 10;
 
-function onClient() {
-    var fuser = $.cookie("cookie_user");
-    var faction = $("#faction").attr("value");
-    var fid = $("#fid").attr("value");
-    var fname = $("#fname").val();
-    var ftaobao = $("#ftaobao").val();
-    var ftel = $("#ftel").val();
-    var ftel2 = $("#ftel2").val();
-    var faddr = $("#faddr").val();
-    var fcode = $("#fcode").val();
-    $("#faction").attr("value", "add");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/client.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": faction,
-            "fid": fid,
-            "fname": fname,
-            "ftaobao": ftaobao,
-            "ftel": ftel,
-            "ftel2": ftel2,
-            "faddr": faddr,
-            "fcode": fcode
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadClient();
-                return true;
-            }
-        }
-    });
-
-    return false;
-}
-
 function loadClient() {
     document.title = "客户";
     $.ajax({
@@ -62,7 +24,7 @@ function loadClient() {
                 st.addRow(item.id, [item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
             });
 
-            var html = "<form id='editform' onsubmit='return onClient();'>" +
+            var html = "<form id='editform'" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<div><label>" + document.title + "</label><input type='text' id='fname' /></div>" +
@@ -103,6 +65,44 @@ function loadClient() {
 
             $(".del").click(function() {
                 onDel("./dxx/client.php", loadClient);
+            });
+
+            $("#editform").submit(function() {
+                var fuser = $.cookie("cookie_user");
+                var faction = $("#faction").attr("value");
+                var fid = $("#fid").attr("value");
+                var fname = $("#fname").val();
+                var ftaobao = $("#ftaobao").val();
+                var ftel = $("#ftel").val();
+                var ftel2 = $("#ftel2").val();
+                var faddr = $("#faddr").val();
+                var fcode = $("#fcode").val();
+                $("#faction").attr("value", "add");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/client.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": faction,
+                        "fid": fid,
+                        "fname": fname,
+                        "ftaobao": ftaobao,
+                        "ftel": ftel,
+                        "ftel2": ftel2,
+                        "faddr": faddr,
+                        "fcode": fcode
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadClient();
+                            return true;
+                        }
+                    }
+                });
+
+                return false;
             });
         }
     });

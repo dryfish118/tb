@@ -1,31 +1,3 @@
-function onUser() {
-    var fuser = $.cookie("cookie_user");
-    var faction = $("#faction").attr("value");
-    var fid = $("#fid").attr("value");
-    var fname = $("#fname").val();
-    $("#faction").attr("value", "add");
-    $.ajax({
-        type: "POST",
-        url: "./dxx/user.php",
-        cache: false,
-        data: {
-            "fuser": fuser,
-            "faction": faction,
-            "fid": fid,
-            "fname": fname
-        },
-        dataType: "text",
-        success: function(data, textStatus) {
-            if (parseInt(data) == 1) {
-                loadUser();
-                return true;
-            }
-        }
-    });
-
-    return false;
-}
-
 function loadUser() {
     document.title = "人员";
     $.ajax({
@@ -46,7 +18,7 @@ function loadUser() {
                 st.addRow(item.id, [item.name]);
             });
 
-            var html = "<form id='editform' onsubmit='return onUser();'>" +
+            var html = "<form id='editform'>" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
                 "<label>" + document.title + "</label><input type='text' id='fname' />" +
@@ -66,6 +38,34 @@ function loadUser() {
 
             $(".del").click(function() {
                 onDel("./dxx/user.php", $(this).parent().parent().attr("value"), loadUser);
+            });
+
+            $("#editform").submit(function() {
+                var fuser = $.cookie("cookie_user");
+                var faction = $("#faction").attr("value");
+                var fid = $("#fid").attr("value");
+                var fname = $("#fname").val();
+                $("#faction").attr("value", "add");
+                $.ajax({
+                    type: "POST",
+                    url: "./dxx/user.php",
+                    cache: false,
+                    data: {
+                        "fuser": fuser,
+                        "faction": faction,
+                        "fid": fid,
+                        "fname": fname
+                    },
+                    dataType: "text",
+                    success: function(data, textStatus) {
+                        if (parseInt(data) == 1) {
+                            loadUser();
+                            return true;
+                        }
+                    }
+                });
+
+                return false;
             });
         }
     });
