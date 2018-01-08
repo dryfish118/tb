@@ -1,4 +1,4 @@
-﻿<?php require_once("conn.php") ?>
+<?php require_once("conn.php") ?>
 <?php
 $fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
@@ -8,20 +8,19 @@ if ($fuser == 0 || $faction == "") {
 
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
-$fout = isset($_POST["fout"]) ? $_POST["fout"] : 1;
 switch ($faction) {
-    case "list" : {
-        $sql = "select * from issue order by issue_name";
+    case "listcat1" : {
+        $sql = "select * from cat1 order by cat1_name";
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
-            $json = "{\"issue\":[";
+            $json = "{\"cat\":[";
             while ($row = $rs->fetch_assoc()) {
                 if ($count) {
                     $json .= ",";
                 }
                 $count++;
-                $json .= "{\"id\":" . $row["issue_id"] . ",\"name\":\"" . $row["issue_name"] . "\",\"out\":\"" . $row["issue_out"] . "\"}";
+                $json .= "{\"id\":" . $row["cat1_id"] . ",\"name\":\"" . $row["cat1_name"] . "\"}";
             }
             $json .= "]}";
             $rs->free();
@@ -30,45 +29,45 @@ switch ($faction) {
         }
         break;
     }
-    case "add": {
+    case "addcat1": {
         $result = 0;
         if ($fname != "") {
-            $sql = "insert into issue(issue_name, issue_out) values('$fname',$fout)";
+            $sql = "insert into cat1(cat1_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "issue", $fname . "(" . $fout . ")");
+                $result = addHistory($fuser, "add", "cat1", $fname);
             }
         }
         echo $result;
         break;
     }
-    case "delete": {
+    case "deletecat1": {
         $result = 0;
         if ($fid > 0) {
-            $sql = "select issue_name from issue where issue_id=$fid";
+            $sql = "select cat1_name from cat1 where cat1_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["issue_name"];
-                $sql = "delete from issue where issue_id=$fid";
+                $fname = $row["cat1_name"];
+                $sql = "delete from cat1 where cat1_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "issue", $fname);
+                    $result = addHistory($fuser, "delete", "cat1", $fname);
                 }
             }
         }
         echo $result;
         break;
     }
-    case "update": {
+    case "updatecat1": {
         $result = 0;
         if ($fid > 0 && $fname != "") {
-            $sql = "select issue_name from issue where issue_id=$fid";
+            $sql = "select cat1_name from cat1 where cat1_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname_old = $row["issue_name"];
-                $sql = "update issue set issue_name='$fname', issue_out=$fout where issue_id=$fid";
+                $fname_old = $row["cat1_name"];
+                $sql = "update cat1 set cat1_name='$fname' where cat1_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "issue", "$fname_old->$fname");
+                    $result = addHistory($fuser, "update", "cat1", "$fname_old->$fname");
                 }
             }
         }

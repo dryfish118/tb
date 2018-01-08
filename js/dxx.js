@@ -90,7 +90,7 @@ function onPage(txt, pages) {
     return page;
 }
 
-function onDel(strUrl, fid, fnLoad) {
+function onCustomDel(strUrl, faction, fid, fnLoad) {
     if (!confirm("确定要删除吗？")) {
         return;
     }
@@ -101,7 +101,7 @@ function onDel(strUrl, fid, fnLoad) {
         cache: false,
         data: {
             "fuser": fuser,
-            "faction": "delete",
+            "faction": faction,
             "fid": fid
         },
         dataType: "text",
@@ -111,6 +111,10 @@ function onDel(strUrl, fid, fnLoad) {
             }
         }
     });
+}
+
+function onDel(strUrl, fid, fnLoad) {
+    onCustomDel(strUrl, "delete", fid, fnLoad);
 }
 
 $("#menu li").click(function() {
