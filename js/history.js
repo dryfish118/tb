@@ -31,7 +31,7 @@ function loadHistory() {
                 loadHistory();
             });
 
-            $("#fpage").bind("keypress", function(event) {
+            $("#pagenum").bind("keypress", function(event) {
                 if (event.keyCode == "13") {
                     pageCurrent = onPage($(this).val(), data.pages);
                     loadHistory();

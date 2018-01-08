@@ -1,15 +1,25 @@
 function SmartTable() {
+    this.name = "";
     this.pageTotal = 0;
     this.pageCur = 0;
+    this.pageName = "";
     this.ths = null;
     this.ids = [];
     this.trs = [];
     this.hasOrder = false;
     this.hasEdit = false;
 
+    this.setName = function(name) {
+        this.name = name;
+    };
+
     this.setPage = function(pageTotal, pageCur) {
         this.pageTotal = parseInt(pageTotal);
         this.pageCur = parseInt(pageCur);
+    };
+
+    this.setPageName = function(name) {
+        this.pageName = name;
     };
 
     this.setHeader = function(ths) {
@@ -35,7 +45,11 @@ function SmartTable() {
         var html = "";
 
         if (this.pageTotal > 1) {
-            html += "<div id='gotoPage'>";
+            if (this.pageName !== "") {
+                html += "<div class='pages' id='" + this.pageName + "'>";
+            } else {
+                html += "<div class='pages'>";
+            }
             var pageMax = 6;
             var pageTotal = this.pageTotal;
             if (pageTotal > pageMax) {
@@ -75,14 +89,18 @@ function SmartTable() {
             }
             if (pageMax < this.pageTotal) {
                 html += "&nbsp;<span>" +
-                    "<input type='text' id='fpage' " +
+                    "<input type='text' id='pagenum' " +
                     "min='1' max='" + this.pageTotal + "' " +
                     "value='" + this.pageCur + "' /></span>";
             }
             html += "</div>";
         }
 
-        html += "<div><table id='edittable'>";
+        if (this.name !== "") {
+            html += "<div><table id='" + this.name + "'>";
+        } else {
+            html += "<div><table>";
+        }
         if (this.ths !== null || this.hasOrder || this.hasEdit) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
