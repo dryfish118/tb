@@ -8,6 +8,7 @@ if ($fuser == 0 || $faction == "") {
 
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+$fcat1 = isset($_POST["fcat1"]) ? $_POST["fcat1"] : 0;
 switch ($faction) {
     case "listcat1" : {
         $sql = "select * from cat1 order by cat1_name";
@@ -21,6 +22,26 @@ switch ($faction) {
                 }
                 $count++;
                 $json .= "{\"id\":" . $row["cat1_id"] . ",\"name\":\"" . $row["cat1_name"] . "\"}";
+            }
+            $json .= "]}";
+            $rs->free();
+    
+            echo $json;
+        }
+        break;
+    }
+    case "listcat2" : {
+        $sql = "select * from cat2 order by cat2_name where cat2_cat1_id=$fcat1";
+        $rs = $conn->query($sql);
+        if ($rs) {
+            $count = 0;
+            $json = "{\"cat\":[";
+            while ($row = $rs->fetch_assoc()) {
+                if ($count) {
+                    $json .= ",";
+                }
+                $count++;
+                $json .= "{\"id\":" . $row["cat2_id"] . ",\"name\":\"" . $row["cat2_name"] . "\"}";
             }
             $json .= "]}";
             $rs->free();
