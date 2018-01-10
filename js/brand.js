@@ -1,5 +1,6 @@
 var pageCurrent = 1;
 var pageCount = 10;
+var order_name = 0;
 
 function loadBrand() {
     document.title = "品牌";
@@ -12,6 +13,7 @@ function loadBrand() {
             "faction": "list",
             "fcurrent": pageCurrent,
             "fcount": pageCount,
+            "forder": order_name
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -20,6 +22,7 @@ function loadBrand() {
             st.setPage(data.pages, data.current);
             st.setEdit();
             st.setHeader([document.title]);
+            st.setOrder([order_name]);
             $.each(data.brand, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
@@ -31,6 +34,11 @@ function loadBrand() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form></div>" + st.getTable();
             $("#main").html(html);
+
+            $(".order").click(function() {
+                order_name = (order_name === 0) ? 1 : 0;
+                loadBrand();
+            });
 
             $(".page").click(function() {
                 pageCurrent = onPage($(this).text(), data.pages);

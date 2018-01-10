@@ -10,6 +10,7 @@ $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
 $fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
 $fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
+$forder = isset($_POST["forder"]) ? $_POST["forder"] : 0;
 switch ($faction) {
     case "list" : {
         $pages = 0;
@@ -30,7 +31,10 @@ switch ($faction) {
                 }
             }
         }
-        $sql = "select * from brand order by brand_id";
+        $sql = "select * from brand order by brand_name";
+        if ($forder != 0) {
+            $sql .= " desc";
+        }
         if ($fcount > 0 && $fcurrent > 0) {
             $sql = $sql . " limit " . (($fcurrent - 1) * $fcount) . "," . $fcount;
         }
