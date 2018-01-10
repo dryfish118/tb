@@ -1,8 +1,8 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
-if ($fuser == 0 || $faction == "") {
+if ($flogin == 0 || $faction == "") {
     return;
 }
 
@@ -36,7 +36,7 @@ switch ($faction) {
         if ($fname != "") {
             $sql = "insert into color(color_name,color_order) select '$fname', (max(color_order)+1) from color";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "color", $fname);
+                $result = addHistory($flogin, "add", "color", $fname);
             }
         }
         echo $result;
@@ -57,7 +57,7 @@ switch ($faction) {
                 if ($conn->query($sql)) {
                     $sql = "update color set color_order=color_order-1 where color_order>$forder";
                     if ($conn->query($sql)) {
-                        $result = addHistory($fuser, "delete", "color", $fname);
+                        $result = addHistory($flogin, "delete", "color", $fname);
                         $conn->commit();
                     } else {
                         $conn->rollback();
@@ -80,7 +80,7 @@ switch ($faction) {
                 $fname_old = $row["color_name"];
                 $sql = "update color set color_name='$fname' where color_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "color", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "color", "$fname_old->$fname");
                 }
             }
         }
@@ -88,19 +88,19 @@ switch ($faction) {
         break;
     }
     case "top": {
-        echo toTop("color");
+        echo toTop($fid, $flogin, "color");
         break;
     }
     case "bottom": {
-        echo toBottom("color");
+        echo toBottom($fid, $flogin, "color");
         break;
     }
     case "up": {
-        echo toUp("color");
+        echo toUp($fid, $flogin, "color");
         break;
     }
     case "down": {
-        echo toDown("color");
+        echo toDown($fid, $flogin, "color");
         break;
     }
 }

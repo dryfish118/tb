@@ -73,13 +73,12 @@ function onCustomDel(strUrl, faction, fid, fnLoad) {
     if (!confirm("确定要删除吗？")) {
         return;
     }
-    var fuser = $.cookie("cookie_user");
     $.ajax({
         type: "POST",
         url: strUrl,
         cache: false,
         data: {
-            "fuser": fuser,
+            "flogin": $.cookie("cookie_login"),
             "faction": faction,
             "fid": fid
         },

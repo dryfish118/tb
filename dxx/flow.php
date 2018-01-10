@@ -1,4 +1,4 @@
-﻿<?php require_once("conn.php") ?>
+<?php require_once("conn.php") ?>
 <?php
 $flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
@@ -15,11 +15,13 @@ $faddr = isset($_POST["faddr"]) ? $_POST["faddr"] : "";
 $fcode = isset($_POST["fcode"]) ? $_POST["fcode"] : "";
 $fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
 $fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
+$fordertype = isset($_POST["fordertype"]) ? $_POST["fordertype"] : 0;
+$forderdir = isset($_POST["forderdir"]) ? $_POST["forderdir"] : 0;
 switch ($faction) {
     case "list" : {
         $pages = 0;
         if ($fcount > 0 && $fcurrent > 0) {
-            $sql = "select count(*) as t from client";
+            $sql = "select count(*) as t from flow";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row= $rs->fetch_assoc();
@@ -35,26 +37,43 @@ switch ($faction) {
                 }
             }
         }
-        $sql = "select * from client order by client_id";
+        $sql = "select flow_id, issue_id, issue_name, user_id, user_name, "
+        . "date_format(flow_time, '%Y-%m-%d') as flow_time, "
+        . "flow_money, flow_remark "
+        . "from user inner join (issue inner join flow "
+        . "on issue.issue_id = flow.flow_issue_id) "
+        . "on user.user_id = flow.flow_user_id";
+        $sql .= " order by ";
+        if ($fordertype == 0) {
+            $sql .= "issue_name";
+        } else if ($fordertype == 1) {
+            $sql .= "user_name";
+        } else if ($fordertype == 2) {
+            $sql .= "flow_time";
+        } else {
+            $sql .= "flow_money";
+        }
+        if ($forderdir != 0) {
+            $sql .= " desc";
+        }
         if ($fcount > 0 && $fcurrent > 0) {
             $sql = $sql . " limit " . (($fcurrent - 1) * $fcount) . "," . $fcount;
         }
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
-            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"client\":[";
+            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"flow\":[";
             while ($row = $rs->fetch_assoc()) {
                 if ($count) {
                     $json .= ",";
                 }
                 $count++;
-				$json .= "{\"id\":" . $row["client_id"] . 
-					",\"name\":\"" . trimReturn($row["client_name"]) . 
-					"\",\"taobao\":\"" . trimReturn($row["client_taobao"]) . 
-					"\",\"tel\":\"" . trimReturn($row["client_tel"]) . 
-					"\",\"tel2\":\"" . trimReturn($row["client_tel2"]) . 
-					"\",\"addr\":\"" . trimReturn($row["client_addr"]) . 
-					"\",\"code\":\"" . trimReturn($row["client_code"]) . "\"}";
+				$json .= "{\"id\":" . $row["flow_id"] . 
+					",\"issue\":\"" . $row["issue_name"] . 
+					"\",\"user\":\"" . $row["user_name"] . 
+					"\",\"time\":\"" . $row["flow_time"] . 
+					"\",\"money\":\"" . $row["flow_money"] . 
+					"\",\"remark\":\"" . trimReturn($row["flow_remark"]) . "\"}";
             }
             $json .= "]}";
             $rs->free();

@@ -3,12 +3,13 @@ var pageCount = 10;
 
 function loadClient() {
     document.title = "客户";
+    var flogin = $.cookie("cookie_login");
     $.ajax({
         type: "POST",
         url: "./dxx/client.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": flogin,
             "faction": "list",
             "fcurrent": pageCurrent,
             "fcount": pageCount,
@@ -74,7 +75,6 @@ function loadClient() {
             });
 
             $("#editform").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction").attr("value");
                 var fid = $("#fid").attr("value");
                 var fname = $("#fname").val();
@@ -89,7 +89,7 @@ function loadClient() {
                     url: "./dxx/client.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname,

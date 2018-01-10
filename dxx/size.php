@@ -1,8 +1,8 @@
 <?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
-if ($fuser == 0 || $faction == "") {
+if ($flogin == 0 || $faction == "") {
     return;
 }
 
@@ -36,7 +36,7 @@ switch ($faction) {
         if ($fname != "") {
             $sql = "insert into size(size_name, size_order) select '$fname',(max(size_order)+1) from size";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "size", $fname);
+                $result = addHistory($flogin, "add", "size", $fname);
             }
         }
         echo $result;
@@ -57,7 +57,7 @@ switch ($faction) {
                 if ($conn->query($sql)) {
                     $sql = "update size set size_order=size_order-1 where size_order>$forder";
                     if ($conn->query($sql)) {
-                        $result = addHistory($fuser, "delete", "size", $fname);
+                        $result = addHistory($flogin, "delete", "size", $fname);
                         $conn->commit();
                     } else {
                         $conn->rollback();
@@ -80,7 +80,7 @@ switch ($faction) {
                 $fname_old = $row["size_name"];
                 $sql = "update size set size_name='$fname' where size_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "size", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "size", "$fname_old->$fname");
                 }
             }
         }
@@ -88,19 +88,19 @@ switch ($faction) {
         break;
     }
     case "top": {
-        echo toTop("size");
+        echo toTop($fid, $flogin, "size");
         break;
     }
     case "bottom": {
-        echo toBottom("size");
+        echo toBottom($fid, $flogin, "size");
         break;
     }
     case "up": {
-        echo toUp("size");
+        echo toUp($fid, $flogin, "size");
         break;
     }
     case "down": {
-        echo toDown("size");
+        echo toDown($fid, $flogin, "size");
         break;
     }
 }

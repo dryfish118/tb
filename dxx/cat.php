@@ -1,8 +1,8 @@
 <?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
-if ($fuser == 0 || $faction == "") {
+if ($flogin == 0 || $faction == "") {
     return;
 }
 
@@ -59,7 +59,7 @@ switch ($faction) {
         if ($fname != "") {
             $sql = "insert into cat1(cat1_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "cat1", $fname);
+                $result = addHistory($flogin, "add", "cat1", $fname);
             }
         }
         echo $result;
@@ -75,7 +75,7 @@ switch ($faction) {
                 $fname = $row["cat1_name"];
                 $sql = "delete from cat1 where cat1_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "cat1", $fname);
+                    $result = addHistory($flogin, "delete", "cat1", $fname);
                 }
             }
         }
@@ -92,7 +92,7 @@ switch ($faction) {
                 $fname_old = $row["cat1_name"];
                 $sql = "update cat1 set cat1_name='$fname' where cat1_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "cat1", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "cat1", "$fname_old->$fname");
                 }
             }
         }
@@ -104,7 +104,7 @@ switch ($faction) {
         if ($fname != "" && $fcat1 > 0) {
             $sql = "insert into cat2(cat2_name,cat2_cat1_id) values('$fname',$fcat1)";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "cat2", $fname);
+                $result = addHistory($flogin, "add", "cat2", $fname);
             }
         }
         echo $result;
@@ -120,7 +120,7 @@ switch ($faction) {
                 $fname = $row["cat2_name"];
                 $sql = "delete from cat2 where cat2_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "cat2", $fname);
+                    $result = addHistory($flogin, "delete", "cat2", $fname);
                 }
             }
         }
@@ -137,7 +137,7 @@ switch ($faction) {
                 $fname_old = $row["cat2_name"];
                 $sql = "update cat2 set cat2_name='$fname' where cat2_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "cat2", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "cat2", "$fname_old->$fname");
                 }
             }
         }

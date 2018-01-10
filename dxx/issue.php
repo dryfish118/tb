@@ -1,8 +1,8 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
-if ($fuser == 0 || $faction == "") {
+if ($flogin == 0 || $faction == "") {
     return;
 }
 
@@ -10,7 +10,7 @@ $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
 $fout = isset($_POST["fout"]) ? $_POST["fout"] : 1;
 $fordertype = isset($_POST["fordertype"]) ? $_POST["fordertype"] : 0;
-$forder = isset($_POST["forder"]) ? $_POST["forder"] : 0;
+$forderdir = isset($_POST["forderdir"]) ? $_POST["forderdir"] : 0;
 switch ($faction) {
     case "list" : {
         $sql = "select * from issue order by ";
@@ -19,7 +19,7 @@ switch ($faction) {
         } else {
             $sql .= "issue_out";
         }
-        if ($forder != 0) {
+        if ($forderdir != 0) {
             $sql .= " desc";
         }
         $rs = $conn->query($sql);
@@ -45,7 +45,7 @@ switch ($faction) {
         if ($fname != "") {
             $sql = "insert into issue(issue_name, issue_out) values('$fname',$fout)";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "issue", $fname . "(" . $fout . ")");
+                $result = addHistory($flogin, "add", "issue", $fname . "(" . $fout . ")");
             }
         }
         echo $result;
@@ -61,7 +61,7 @@ switch ($faction) {
                 $fname = $row["issue_name"];
                 $sql = "delete from issue where issue_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "issue", $fname);
+                    $result = addHistory($flogin, "delete", "issue", $fname);
                 }
             }
         }
@@ -78,7 +78,7 @@ switch ($faction) {
                 $fname_old = $row["issue_name"];
                 $sql = "update issue set issue_name='$fname', issue_out=$fout where issue_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "issue", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "issue", "$fname_old->$fname");
                 }
             }
         }

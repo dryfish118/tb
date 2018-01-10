@@ -1,11 +1,12 @@
 function loadColor() {
     document.title = "颜色";
+    var flogin = $.cookie("cookie_login");
     $.ajax({
         type: "POST",
         url: "./dxx/color.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": flogin,
             "faction": "list"
         },
         dataType: "text",
@@ -27,8 +28,7 @@ function loadColor() {
                 "</form></div>" + st.getTable();
             $("#main").html(html);
 
-            $(".order").click(function() {
-                var fuser = $.cookie("cookie_user");
+            $(".array").click(function() {
                 var faction = $(this).attr("value");
                 var $tr = $(this).parent().parent();
                 var fid = $tr.attr("value");
@@ -37,7 +37,7 @@ function loadColor() {
                     url: "./dxx/color.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid
                     },
@@ -64,7 +64,6 @@ function loadColor() {
             });
 
             $("#editform").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction").attr("value");
                 var fid = $("#fid").attr("value");
                 var fname = $("#fname").val();
@@ -74,7 +73,7 @@ function loadColor() {
                     url: "./dxx/color.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname

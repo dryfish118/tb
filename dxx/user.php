@@ -1,6 +1,6 @@
 <?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
 if ($faction == "") {
     return;
@@ -8,7 +8,7 @@ if ($faction == "") {
 
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
-$forder = isset($_POST["forder"]) ? $_POST["forder"] : 0;
+$forderdir = isset($_POST["forderdir"]) ? $_POST["forderdir"] : 0;
 switch ($faction) {
     case "login": {
         $user_id = -1;
@@ -26,11 +26,11 @@ switch ($faction) {
         break;
     }
     case "list" : {
-        if ($fuser == 0) {
+        if ($flogin == 0) {
             return;
         }
         $sql = "select * from user order by user_id";
-        if ($forder != 0) {
+        if ($forderdir != 0) {
             $sql .= " desc";
         }
         $rs = $conn->query($sql);
@@ -53,10 +53,10 @@ switch ($faction) {
     }
     case "add": {
         $result = 0;
-        if ($fuser != 0 && $fname != "") {
+        if ($flogin != 0 && $fname != "") {
             $sql = "insert into user(user_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "user", $fname);
+                $result = addHistory($flogin, "add", "user", $fname);
             }
         }
         echo $result;
@@ -64,7 +64,7 @@ switch ($faction) {
     }
     case "delete": {
         $result = 0;
-        if ($fuser != 0 && $fid > 0) {
+        if ($flogin != 0 && $fid > 0) {
             $sql = "select user_name from user where user_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
@@ -72,7 +72,7 @@ switch ($faction) {
                 $fname = $row["user_name"];
                 $sql = "delete from user where user_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "user", $fname);
+                    $result = addHistory($flogin, "delete", "user", $fname);
                 }
             }
         }
@@ -81,7 +81,7 @@ switch ($faction) {
     }
     case "update": {
         $result = 0;
-        if ($fuser != 0 && $fid > 0 && $fname != "") {
+        if ($flogin != 0 && $fid > 0 && $fname != "") {
             $sql = "select user_name from user where user_id=$fid";
             $rs = $conn->query($sql);
             if ($rs) {
@@ -89,7 +89,7 @@ switch ($faction) {
                 $fname_old = $row["user_name"];
                 $sql = "update user set user_name='$fname' where user_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "user", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "user", "$fname_old->$fname");
                 }
             }
         }

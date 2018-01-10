@@ -22,166 +22,136 @@
         return $str;
     }
 
-    function toTop($page) {
+    function toTop($fid, $flogin, $page) {
         global $conn;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select " . $page . "_name as fname, " . $page . 
-                "_order as forder from " . $page . 
-                " where " . $page . "_id='" . $_POST["fid"] . "'";
+        $sql = "select " . $page . "_name as fname, " . $page . "_order as forder from $page where " . $page . "_id=$fid";
+        $rs = $conn->query($sql);
+        if ($rs) {
+            $row = $rs->fetch_assoc();
+            $fname = $row["fname"];
+            $forder = $row["forder"];
+
+            $sql = "select min(" . $page . "_order) as forder from $page where " . $page . "_order<$forder";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["fname"];
-                $forder = $row["forder"];
+                $forderMin = $row["forder"];
 
-                $sql = "select min(" . $page . "_order) as forder from " . $page .
-                    " where " . $page . "_order<" . $forder;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $forderMin = $row["forder"];
-
-                    $conn->autocommit(false);
-                    $sql = "update " . $page . " set " . $page .
-                        "_order=" . $page . "_order+1 where " . 
-                        $page . "_order<" . $forder;
+                $conn->autocommit(false);
+                $sql = "update $page set " . $page . "_order=" . $page . "_order+1 where " . $page . "_order<$forder";
+                if ($conn->query($sql)) {
+                    $sql = "update $page set " . $page . "_order=$forderMin  where " . $page . "_id=$fid";
                     if ($conn->query($sql)) {
-                        $sql = "update " . $page . " set " . $page . "_order=" . 
-                            $forderMin . " where " . $page . "_id='" . $_POST["fid"] . "'";
-                        if ($conn->query($sql)) {
-                            addHistory($_POST["fuser"], "top", $page, $fname);
-                            $conn->commit();
-                            return 1;
-                        } else {
-                            $conn->rollback();
-                        }
+                        addHistory($flogin, "top", $page, $fname);
+                        $conn->commit();
+                        return 1;
                     } else {
                         $conn->rollback();
                     }
+                } else {
+                    $conn->rollback();
                 }
             }
         }
         return 0;
     }
 
-    function toBottom($page) {
+    function toBottom($fid, $flogin, $page) {
         global $conn;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select " . $page . "_name as fname, " . $page . 
-                "_order as forder from " . $page . 
-                " where " . $page . "_id='" . $_POST["fid"] . "'";
+        $sql = "select " . $page . "_name as fname, " . $page . "_order as forder from $page where " . $page . "_id=$fid";
+        $rs = $conn->query($sql);
+        if ($rs) {
+            $row = $rs->fetch_assoc();
+            $fname = $row["fname"];
+            $forder = $row["forder"];
+
+            $sql = "select max(" . $page . "_order) as forder from $page where " . $page . "_order>$forder";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["fname"];
-                $forder = $row["forder"];
+                $forderMax = $row["forder"];
 
-                $sql = "select max(" . $page . "_order) as forder from " . $page .
-                    " where " . $page . "_order>" . $forder;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $forderMax = $row["forder"];
-
-                    $conn->autocommit(false);
-                    $sql = "update " . $page . " set " . $page .
-                        "_order=" . $page . "_order-1 where " . 
-                        $page . "_order>" . $forder;
+                $conn->autocommit(false);
+                $sql = "update $page set " . $page . "_order=" . $page . "_order-1 where " . $page . "_order>$forder";
+                if ($conn->query($sql)) {
+                    $sql = "update $page set " . $page . "_order=$forderMax where " . $page . "_id=$fid";
                     if ($conn->query($sql)) {
-                        $sql = "update " . $page . " set " . $page . "_order=" . 
-                            $forderMax . " where " . $page . "_id='" . $_POST["fid"] . "'";
-                        if ($conn->query($sql)) {
-                            addHistory($_POST["fuser"], "bottom", $page, $fname);
-                            $conn->commit();
-                            return 1;
-                        } else {
-                            $conn->rollback();
-                        }
+                        addHistory($flogin, "bottom", $page, $fname);
+                        $conn->commit();
+                        return 1;
                     } else {
                         $conn->rollback();
                     }
+                } else {
+                    $conn->rollback();
                 }
             }
         }
         return 0;
     }
 
-    function toUp($page) {
+    function toUp($fid, $flogin, $page) {
         global $conn;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select " . $page . "_name as fname, " . $page . 
-                "_order as forder from " . $page . 
-                " where " . $page . "_id='" . $_POST["fid"] . "'";
+        $sql = "select " . $page . "_name as fname, " . $page . "_order as forder from $page where " . $page . "_id=$fid";
+        $rs = $conn->query($sql);
+        if ($rs) {
+            $row = $rs->fetch_assoc();
+            $fname = $row["fname"];
+            $forder = $row["forder"];
+
+            $sql = "select max(" . $page . "_order) as forder from $page where " . $page . "_order<$forder";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["fname"];
-                $forder = $row["forder"];
+                $forderMax = $row["forder"];
 
-                $sql = "select max(" . $page . "_order) as forder from " . 
-                    $page . " where " . $page . "_order<" . $forder;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $forderMax = $row["forder"];
-
-                    $conn->autocommit(false);
-                    $sql = "update " . $page . " set " . $page . "_order=" . 
-                        $forder . " where " . $page . "_order=" . $forderMax;
+                $conn->autocommit(false);
+                $sql = "update $page set " . $page . "_order=$forder where " . $page . "_order=$forderMax";
+                if ($conn->query($sql)) {
+                    $sql = "update $page set " . $page . "_order=$forderMax where " . $page . "_id=$fid";
                     if ($conn->query($sql)) {
-                        $sql = "update " . $page . " set " . $page . "_order=" . 
-                            $forderMax . " where " . $page . "_id='" . $_POST["fid"] . "'";
-                        if ($conn->query($sql)) {
-                            addHistory($_POST["fuser"], "up", $page, $fname);
-                            $conn->commit();
-                            return 1;
-                        } else {
-                            $conn->rollback();
-                        }
+                        addHistory($flogin, "up", $page, $fname);
+                        $conn->commit();
+                        return 1;
                     } else {
                         $conn->rollback();
                     }
+                } else {
+                    $conn->rollback();
                 }
             }
         }
         return 0;
     }
 
-    function toDown($page) {
+    function toDown($fid, $flogin, $page) {
         global $conn;
-        if (isset($_POST["fid"]) && $_POST["fid"] > 0) {
-            $sql = "select " . $page . "_name as fname, " . $page . 
-                "_order as forder from " . $page . 
-                " where " . $page . "_id='" . $_POST["fid"] . "'";
+        $sql = "select " . $page . "_name as fname, " . $page . "_order as forder from $page where " . $page . "_id=$fid";
+        $rs = $conn->query($sql);
+        if ($rs) {
+            $row = $rs->fetch_assoc();
+            $fname = $row["fname"];
+            $forder = $row["forder"];
+
+            $sql = "select min(" . $page . "_order) as forder from $page where " . $page . "_order>$forder";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row = $rs->fetch_assoc();
-                $fname = $row["fname"];
-                $forder = $row["forder"];
+                $forderMin = $row["forder"];
 
-                $sql = "select min(" . $page . "_order) as forder from " . 
-                    $page . " where " . $page . "_order>" . $forder;
-                $rs = $conn->query($sql);
-                if ($rs) {
-                    $row = $rs->fetch_assoc();
-                    $forderMin = $row["forder"];
-
-                    $conn->autocommit(false);
-                    $sql = "update " . $page . " set " . $page . "_order=" . 
-                        $forder . " where " . $page . "_order=" . $forderMin;
+                $conn->autocommit(false);
+                $sql = "update $page set " . $page . "_order=$forder where " . $page . "_order=$forderMin";
+                if ($conn->query($sql)) {
+                    $sql = "update $page set " . $page . "_order=$forderMin where " . $page . "_id=$fid";
                     if ($conn->query($sql)) {
-                        $sql = "update " . $page . " set " . $page . "_order=" . 
-                            $forderMin . " where " . $page . "_id='" . $_POST["fid"] . "'";
-                        if ($conn->query($sql)) {
-                            addHistory($_POST["fuser"], "up", $page, $fname);
-                            $conn->commit();
-                            return 1;
-                        } else {
-                            $conn->rollback();
-                        }
+                        addHistory($flogin, "up", $page, $fname);
+                        $conn->commit();
+                        return 1;
                     } else {
                         $conn->rollback();
                     }
+                } else {
+                    $conn->rollback();
                 }
             }
         }

@@ -1,11 +1,12 @@
 function loadSize() {
     document.title = "尺寸";
+    var flogin = $.cookie("cookie_login");
     $.ajax({
         type: "POST",
         url: "./dxx/size.php",
-        cach: false,
+        cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": flogin,
             "faction": "list"
         },
         dataType: "text",
@@ -28,7 +29,6 @@ function loadSize() {
             $("#main").html(html);
 
             $(".array").click(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $(this).attr("value");
                 var $tr = $(this).parent().parent();
                 var fid = $tr.attr("value");
@@ -37,7 +37,7 @@ function loadSize() {
                     url: "./dxx/size.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid
                     },
@@ -64,7 +64,6 @@ function loadSize() {
             });
 
             $("#editform").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction").attr("value");
                 var fid = $("#fid").attr("value");
                 var fname = $("#fname").val();
@@ -74,7 +73,7 @@ function loadSize() {
                     url: "./dxx/size.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname

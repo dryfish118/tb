@@ -1,6 +1,6 @@
 ﻿<?php require_once("conn.php") ?>
 <?php
-if (!isset($_POST["fuser"]) || !isset($_POST["faction"]) || $_POST["faction"] != "list") {
+if (!isset($_POST["flogin"]) || !isset($_POST["faction"]) || $_POST["faction"] != "list") {
     return;
 }
 

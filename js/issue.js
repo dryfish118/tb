@@ -1,6 +1,5 @@
-var order_type = 0;
-var order_name = 0;
-var order_out = 0;
+var orderType = 0;
+var orderDir = [0, 0];
 
 function loadIssue() {
     document.title = "条目";
@@ -9,10 +8,10 @@ function loadIssue() {
         url: "./dxx/issue.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": $.cookie("cookie_login"),
             "faction": "list",
-            "fordertype": order_type,
-            "forder": (order_type === 0 ? order_name : order_out)
+            "fordertype": orderType,
+            "forderdir": orderDir[orderType]
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -20,7 +19,7 @@ function loadIssue() {
             var st = new SmartTable();
             st.setEdit();
             st.setHeader([document.title, "收支"]);
-            st.setOrder([order_name, order_out]);
+            st.setOrder(orderDir);
             $.each(data.issue, function(i, item) {
                 st.addRow(item.id, [item.name, item.out]);
             });
@@ -35,14 +34,8 @@ function loadIssue() {
             $("#main").html(html);
 
             $(".order").click(function() {
-                var col = $(this).parent().parent().find("th").index($(this).parent()[0]);
-                if (col === 0) {
-                    order_name = (order_name === 0) ? 1 : 0;
-                    order_type = 0;
-                } else {
-                    order_out = (order_out === 0) ? 1 : 0;
-                    order_type = 1;
-                }
+                orderType = $(this).parent().parent().find("th").index($(this).parent()[0]);
+                orderDir[orderType] = (orderDir[orderType] === 0 ? 1 : 0);
                 loadIssue();
             });
 
@@ -62,7 +55,6 @@ function loadIssue() {
             });
 
             $("#editform").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction").attr("value");
                 var fid = $("#fid").attr("value");
                 var fname = $("#fname").val();
@@ -73,7 +65,7 @@ function loadIssue() {
                     url: "./dxx/issue.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname,

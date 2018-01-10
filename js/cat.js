@@ -2,12 +2,13 @@ var cat1_id = 0;
 
 function loadCat() {
     document.title = "分类";
+    var flogin = $.cookie("cookie_login");
     $.ajax({
         type: "POST",
         url: "./dxx/cat.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": flogin,
             "faction": "listcat1",
             "fcat1": cat1_id
         },
@@ -62,7 +63,6 @@ function loadCat() {
             });
 
             $("#cat1form").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction1").attr("value");
                 var fid = $("#fid1").attr("value");
                 var fname = $("#fname1").val();
@@ -72,7 +72,7 @@ function loadCat() {
                     url: "./dxx/cat.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname
@@ -109,7 +109,6 @@ function loadCat() {
             });
 
             $("#cat2form").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction2").attr("value");
                 var fid = $("#fid2").attr("value");
                 var fname = $("#fname2").val();
@@ -119,7 +118,7 @@ function loadCat() {
                     url: "./dxx/cat.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fcat1": cat1_id,
                         "fid": fid,

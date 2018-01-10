@@ -8,7 +8,7 @@ function loadHistory() {
         url: "./dxx/history.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": $.cookie("cookie_login"),
             "faction": "list",
             "fcurrent": pageCurrent,
             "fcount": pageCount,

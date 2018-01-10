@@ -1,15 +1,18 @@
-var order_name = 0;
+var orderType = 0;
+var orderDir = [0];
 
 function loadUser() {
     document.title = "人员";
+    var flogin = $.cookie("cookie_login");
     $.ajax({
         type: "POST",
         url: "./dxx/user.php",
         cache: false,
         data: {
-            "fuser": $.cookie("cookie_user"),
+            "flogin": flogin,
             "faction": "list",
-            "forder": order_name
+            "fordertype": orderType,
+            "forderdir": orderDir[orderType]
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -17,7 +20,7 @@ function loadUser() {
             var st = new SmartTable();
             st.setEdit();
             st.setHeader([document.title]);
-            st.setOrder([order_name]);
+            st.setOrder(orderDir);
             $.each(data.user, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
@@ -31,7 +34,8 @@ function loadUser() {
             $("#main").html(html);
 
             $(".order").click(function() {
-                order_name = (order_name === 0) ? 1 : 0;
+                orderType = $(this).parent().parent().find("th").index($(this).parent()[0]);
+                orderDir[orderType] = (orderDir[orderType] === 0 ? 1 : 0);
                 loadUser();
             });
 
@@ -49,7 +53,6 @@ function loadUser() {
             });
 
             $("#editform").submit(function() {
-                var fuser = $.cookie("cookie_user");
                 var faction = $("#faction").attr("value");
                 var fid = $("#fid").attr("value");
                 var fname = $("#fname").val();
@@ -59,7 +62,7 @@ function loadUser() {
                     url: "./dxx/user.php",
                     cache: false,
                     data: {
-                        "fuser": fuser,
+                        "flogin": flogin,
                         "faction": faction,
                         "fid": fid,
                         "fname": fname

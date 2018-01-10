@@ -1,8 +1,8 @@
 <?php require_once("conn.php") ?>
 <?php
-$fuser = isset($_POST["fuser"]) ? $_POST["fuser"] : 0;
+$flogin = isset($_POST["flogin"]) ? $_POST["flogin"] : 0;
 $faction = isset($_POST["faction"]) ? $_POST["faction"] : "";
-if ($fuser == 0 || $faction == "") {
+if ($flogin == 0 || $faction == "") {
     return;
 }
 
@@ -10,7 +10,7 @@ $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
 $fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
 $fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
-$forder = isset($_POST["forder"]) ? $_POST["forder"] : 0;
+$forderdir = isset($_POST["forderdir"]) ? $_POST["forderdir"] : 0;
 switch ($faction) {
     case "list" : {
         $pages = 0;
@@ -32,7 +32,7 @@ switch ($faction) {
             }
         }
         $sql = "select * from brand order by brand_name";
-        if ($forder != 0) {
+        if ($forderdir != 0) {
             $sql .= " desc";
         }
         if ($fcount > 0 && $fcurrent > 0) {
@@ -61,7 +61,7 @@ switch ($faction) {
         if ($fname != "") {
             $sql = "insert into brand(brand_name) values('$fname')";
             if ($conn->query($sql)) {
-                $result = addHistory($fuser, "add", "brand", $fname);
+                $result = addHistory($flogin, "add", "brand", $fname);
             }
         }
         echo $result;
@@ -77,7 +77,7 @@ switch ($faction) {
                 $fname = $row["brand_name"];
                 $sql = "delete from brand where brand_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "delete", "brand", $fname);
+                    $result = addHistory($flogin, "delete", "brand", $fname);
                 }
             }
         }
@@ -94,7 +94,7 @@ switch ($faction) {
                 $fname_old = $row["brand_name"];
                 $sql = "update brand set brand_name='$fname' where brand_id=$fid";
                 if ($conn->query($sql)) {
-                    $result = addHistory($fuser, "update", "brand", "$fname_old->$fname");
+                    $result = addHistory($flogin, "update", "brand", "$fname_old->$fname");
                 }
             }
         }
