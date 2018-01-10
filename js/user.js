@@ -59,7 +59,6 @@ function loadUser() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadUser();
-                            return true;
                         }
                     }
                 });

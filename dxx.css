@@ -31,6 +31,12 @@ div#nav ul#menu li {
     text-decoration: underline;
 }
 
+.clickable {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
 #user {
     left: 0;
     width: 40px;
@@ -176,4 +182,19 @@ table .order,
     cursor: pointer;
     color: blue;
     text-decoration: underline;
+}
+
+div.left {
+    width: 45%;
+    float: left;
+}
+
+div.middle {
+    width: 10%;
+    float: left;
+}
+
+div.right {
+    width: 45%;
+    float: left;
 }

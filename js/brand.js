@@ -77,7 +77,6 @@ function loadBrand() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadBrand();
-                            return true;
                         }
                     }
                 });

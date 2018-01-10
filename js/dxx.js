@@ -6,17 +6,6 @@ function callLoad(page) {
 }
 
 function loadPage(page) {
-    /*
-    var c = $.cookie("cookie_" + page);
-    if (typeof(c) == "undefined" || c == null || c == "null") {
-        $.getScript("./js/" + page + ".js", function(data, textStatus, jqXHR) {
-            $.cookie("cookie_" + page, 1);
-            callLoad(page);
-        });
-    } else {
-        callLoad(page);
-    }
-    */
     $.getScript("./js/" + page + ".js", function(data, textStatus, jqXHR) {
         $.cookie("cookie_" + page, 1);
         callLoad(page);
@@ -24,15 +13,6 @@ function loadPage(page) {
 }
 
 function loadMain() {
-    // var table = $.cookie("cookie_table");
-    // if (typeof(table) == "undefined" || table == null || table == "null") {
-    //     $.getScript("./js/table.js", function(data, textStatus, jqXHR) {
-    //         $.cookie("cookie_table", 1);
-    //         loadPage(page);
-    //     });
-    // } else {
-    //     loadPage(page);
-    // }
     var user = $.cookie("cookie_login");
     if (typeof(user) == "undefined" || user === null || user == "null") {
         document.title = "登录";
@@ -60,7 +40,6 @@ function loadMain() {
                     if (id != -1) {
                         $.cookie("cookie_login", id);
                         loadMain();
-                        return true;
                     }
                 }
             });

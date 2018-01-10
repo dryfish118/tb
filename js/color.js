@@ -83,7 +83,6 @@ function loadColor() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadColor();
-                            return true;
                         }
                     }
                 });

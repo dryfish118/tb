@@ -103,7 +103,6 @@ function loadClient() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadClient();
-                            return true;
                         }
                     }
                 });

@@ -83,7 +83,6 @@ function loadSize() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadSize();
-                            return true;
                         }
                     }
                 });

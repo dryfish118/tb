@@ -64,7 +64,6 @@ function loadIssue() {
                     success: function(data, textStatus) {
                         if (parseInt(data) == 1) {
                             loadIssue();
-                            return true;
                         }
                     }
                 });
