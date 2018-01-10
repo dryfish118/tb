@@ -6,7 +6,7 @@ function SmartTable() {
     this.ths = null;
     this.ids = [];
     this.trs = [];
-    this.hasOrder = false;
+    this.hasArray = false;
     this.hasEdit = false;
 
     this.setName = function(name) {
@@ -31,8 +31,8 @@ function SmartTable() {
         this.trs.push(td);
     };
 
-    this.setOrder = function() {
-        this.hasOrder = true;
+    this.setArray = function() {
+        this.hasArray = true;
     };
 
     this.setEdit = function() {
@@ -101,13 +101,13 @@ function SmartTable() {
         } else {
             html += "<div><table>";
         }
-        if (this.ths !== null || this.hasOrder || this.hasEdit) {
+        if (this.ths !== null || this.hasArray || this.hasEdit) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
                 html += "<th>" + this.ths[i] + "</th>";
             }
-            if (this.hasOrder) {
-                html += "<th>" + "排序" + "</th>";
+            if (this.hasArray) {
+                html += "<th>" + "顺序" + "</th>";
             }
             if (this.hasEdit) {
                 html += "<th>" + "操作" + "</th>";
@@ -120,12 +120,12 @@ function SmartTable() {
                 for (j = 0; j < this.trs[i].length; j++) {
                     html += "<td>" + this.trs[i][j] + "</td>";
                 }
-                if (this.hasOrder) {
+                if (this.hasArray) {
                     html += "<td>" +
-                        "<span class='order' value='top'>顶</span>&nbsp;" +
-                        "<span class='order' value='bottom'>底</span>&nbsp;" +
-                        "<span class='order' value='up'>上</span>&nbsp;" +
-                        "<span class='order' value='down'>下</span>" +
+                        "<span class='array' value='top'>顶</span>&nbsp;" +
+                        "<span class='array' value='bottom'>底</span>&nbsp;" +
+                        "<span class='array' value='up'>上</span>&nbsp;" +
+                        "<span class='array' value='down'>下</span>" +
                         "</td>";
                 }
                 if (this.hasEdit) {

@@ -176,7 +176,7 @@ table tr:nth-child(even) {
     background-color: #fdfdfd;
 }
 
-table .order,
+table .array,
 .mod,
 .del {
     cursor: pointer;

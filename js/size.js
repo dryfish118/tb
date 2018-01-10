@@ -12,7 +12,7 @@ function loadSize() {
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
             var st = new SmartTable();
-            st.setOrder();
+            st.setArray();
             st.setEdit();
             st.setHeader([document.title]);
             $.each(data.size, function(i, item) {
@@ -27,7 +27,7 @@ function loadSize() {
                 "</form></div>" + st.getTable();
             $("#main").html(html);
 
-            $(".order").click(function() {
+            $(".array").click(function() {
                 var fuser = $.cookie("cookie_user");
                 var faction = $(this).attr("value");
                 var $tr = $(this).parent().parent();

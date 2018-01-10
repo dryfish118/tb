@@ -12,7 +12,7 @@ function loadColor() {
         success: function(rawData, textStatus) {
             var data = $.parseJSON(rawData);
             var st = new SmartTable();
-            st.setOrder();
+            st.setArray();
             st.setEdit();
             st.setHeader([document.title]);
             $.each(data.color, function(i, item) {
