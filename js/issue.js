@@ -1,3 +1,7 @@
+var order_type = 0;
+var order_name = 0;
+var order_out = 0;
+
 function loadIssue() {
     document.title = "条目";
     $.ajax({
@@ -6,7 +10,9 @@ function loadIssue() {
         cache: false,
         data: {
             "fuser": $.cookie("cookie_user"),
-            "faction": "list"
+            "faction": "list",
+            "fordertype": order_type,
+            "forder": (order_type === 0 ? order_name : order_out)
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -14,6 +20,7 @@ function loadIssue() {
             var st = new SmartTable();
             st.setEdit();
             st.setHeader([document.title, "收支"]);
+            st.setOrder([order_name, order_out]);
             $.each(data.issue, function(i, item) {
                 st.addRow(item.id, [item.name, item.out]);
             });
@@ -26,6 +33,18 @@ function loadIssue() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form></div>" + st.getTable();
             $("#main").html(html);
+
+            $(".order").click(function() {
+                var col = $(this).parent().parent().find("th").index($(this).parent()[0]);
+                if (col === 0) {
+                    order_name = (order_name === 0) ? 1 : 0;
+                    order_type = 0;
+                } else {
+                    order_out = (order_out === 0) ? 1 : 0;
+                    order_type = 1;
+                }
+                loadIssue();
+            });
 
             $(".mod").click(function() {
                 var $tr = $(this).parent().parent();

@@ -31,7 +31,7 @@ div#nav ul#menu li {
     text-decoration: underline;
 }
 
-.sort,
+.order,
 .clickable {
     cursor: pointer;
     color: blue;

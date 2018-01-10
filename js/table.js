@@ -4,7 +4,7 @@ function SmartTable() {
     this.pageCur = 0;
     this.pageName = "";
     this.ths = null;
-    this.sorts = null;
+    this.orders = null;
     this.ids = [];
     this.trs = [];
     this.hasArray = false;
@@ -27,8 +27,8 @@ function SmartTable() {
         this.ths = ths;
     };
 
-    this.setSort = function(sorts) {
-        this.sorts = sorts;
+    this.setOrder = function(orders) {
+        this.orders = orders;
     };
 
     this.addRow = function(id, td) {
@@ -110,14 +110,14 @@ function SmartTable() {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
                 var s = -1;
-                if (this.sorts !== null) {
-                    s = this.sorts[i];
+                if (this.orders !== null) {
+                    s = this.orders[i];
                 }
                 html += "<th>" + this.ths[i];
                 if (s === 0) {
-                    html += "&nbsp<span class='sort'>↑</span>";
+                    html += "&nbsp<span class='order'>∧</span>";
                 } else if (s === 1) {
-                    html += "&nbsp<span class='sort'>↓</span>";
+                    html += "&nbsp<span class='order'>∨</span>";
                 }
                 html += "</th>";
             }

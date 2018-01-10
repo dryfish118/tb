@@ -9,9 +9,19 @@ if ($fuser == 0 || $faction == "") {
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
 $fout = isset($_POST["fout"]) ? $_POST["fout"] : 1;
+$fordertype = isset($_POST["fordertype"]) ? $_POST["fordertype"] : 0;
+$forder = isset($_POST["forder"]) ? $_POST["forder"] : 0;
 switch ($faction) {
     case "list" : {
-        $sql = "select * from issue order by issue_name";
+        $sql = "select * from issue order by ";
+        if ($fordertype == 0) {
+            $sql .= "issue_name";
+        } else {
+            $sql .= "issue_out";
+        }
+        if ($forder != 0) {
+            $sql .= " desc";
+        }
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;

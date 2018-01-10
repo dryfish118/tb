@@ -1,4 +1,4 @@
-var sort_name = 0;
+var order_name = 0;
 
 function loadUser() {
     document.title = "人员";
@@ -9,7 +9,7 @@ function loadUser() {
         data: {
             "fuser": $.cookie("cookie_user"),
             "faction": "list",
-            "fsort": sort_name
+            "forder": order_name
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -17,7 +17,7 @@ function loadUser() {
             var st = new SmartTable();
             st.setEdit();
             st.setHeader([document.title]);
-            st.setSort([sort_name]);
+            st.setOrder([order_name]);
             $.each(data.user, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
@@ -30,8 +30,8 @@ function loadUser() {
                 "</form></div>" + st.getTable();
             $("#main").html(html);
 
-            $(".sort").click(function() {
-                sort_name = (sort_name === 0) ? 1 : 0;
+            $(".order").click(function() {
+                order_name = (order_name === 0) ? 1 : 0;
                 loadUser();
             });
 
