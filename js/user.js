@@ -1,3 +1,5 @@
+var sort_name = 0;
+
 function loadUser() {
     document.title = "人员";
     $.ajax({
@@ -6,7 +8,8 @@ function loadUser() {
         cache: false,
         data: {
             "fuser": $.cookie("cookie_user"),
-            "faction": "list"
+            "faction": "list",
+            "fsort": sort_name
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -14,6 +17,7 @@ function loadUser() {
             var st = new SmartTable();
             st.setEdit();
             st.setHeader([document.title]);
+            st.setSort([sort_name]);
             $.each(data.user, function(i, item) {
                 st.addRow(item.id, [item.name]);
             });
@@ -25,6 +29,11 @@ function loadUser() {
                 "<input type='submit' /><input type='reset' />" +
                 "</form></div>" + st.getTable();
             $("#main").html(html);
+
+            $(".sort").click(function() {
+                sort_name = (sort_name === 0) ? 1 : 0;
+                loadUser();
+            });
 
             $(".mod").click(function() {
                 var $tr = $(this).parent().parent();

@@ -4,6 +4,7 @@ function SmartTable() {
     this.pageCur = 0;
     this.pageName = "";
     this.ths = null;
+    this.sorts = null;
     this.ids = [];
     this.trs = [];
     this.hasArray = false;
@@ -24,6 +25,10 @@ function SmartTable() {
 
     this.setHeader = function(ths) {
         this.ths = ths;
+    };
+
+    this.setSort = function(sorts) {
+        this.sorts = sorts;
     };
 
     this.addRow = function(id, td) {
@@ -104,7 +109,17 @@ function SmartTable() {
         if (this.ths !== null || this.hasArray || this.hasEdit) {
             html += "<tr>";
             for (i = 0; i < this.ths.length; i++) {
-                html += "<th>" + this.ths[i] + "</th>";
+                var s = -1;
+                if (this.sorts !== null) {
+                    s = this.sorts[i];
+                }
+                html += "<th>" + this.ths[i];
+                if (s === 0) {
+                    html += "&nbsp<span class='sort'>↑</span>";
+                } else if (s === 1) {
+                    html += "&nbsp<span class='sort'>↓</span>";
+                }
+                html += "</th>";
             }
             if (this.hasArray) {
                 html += "<th>" + "顺序" + "</th>";

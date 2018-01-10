@@ -8,6 +8,7 @@ if ($faction == "") {
 
 $fid = isset($_POST["fid"]) ? $_POST["fid"] : 0;
 $fname = isset($_POST["fname"]) ? $_POST["fname"] : "";
+$fsort = isset($_POST["fsort"]) ? $_POST["fsort"] : 0;
 switch ($faction) {
     case "login": {
         $user_id = -1;
@@ -29,6 +30,9 @@ switch ($faction) {
             return;
         }
         $sql = "select * from user order by user_id";
+        if ($fsort != 0) {
+            $sql .= " desc";
+        }
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
