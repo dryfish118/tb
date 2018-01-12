@@ -15,6 +15,8 @@ $faddr = isset($_POST["faddr"]) ? $_POST["faddr"] : "";
 $fcode = isset($_POST["fcode"]) ? $_POST["fcode"] : "";
 $fcurrent = isset($_POST["fcurrent"]) ? $_POST["fcurrent"] : 1;
 $fcount = isset($_POST["fcount"]) ? $_POST["fcount"] : 0;
+$fordertype = isset($_POST["fordertype"]) ? $_POST["fordertype"] : 0;
+$forderdir = isset($_POST["forderdir"]) ? $_POST["forderdir"] : 0;
 switch ($faction) {
     case "list" : {
         $pages = 0;
@@ -35,7 +37,25 @@ switch ($faction) {
                 }
             }
         }
-        $sql = "select * from client order by client_id";
+        $sql = "select * from client order by ";
+        if ($fordertype == 1) {
+            $sql .= "client_name";
+        } else if ($fordertype == 2) {
+            $sql .= "client_taobao";
+        } else if ($fordertype == 3) {
+            $sql .= "client_tel";
+        } else if ($fordertype == 4) {
+            $sql .= "client_tel2";
+        } else if ($fordertype == 5) {
+            $sql .= "client_addr";
+        } else if ($fordertype == 6) {
+            $sql .= "client_code";
+        } else {
+            $sql .= "client_id";
+        }
+        if ($forderdir != 0) {
+            $sql .= " desc";
+        }
         if ($fcount > 0 && $fcurrent > 0) {
             $sql = $sql . " limit " . (($fcurrent - 1) * $fcount) . "," . $fcount;
         }

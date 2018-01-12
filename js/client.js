@@ -1,5 +1,7 @@
 var pageCurrent = 1;
 var pageCount = 10;
+var orderType = 0;
+var orderDir = [0, 0, 0, 0, 0, 0, 0];
 
 function loadClient() {
     document.title = "客户";
@@ -13,6 +15,8 @@ function loadClient() {
             "faction": "list",
             "fcurrent": pageCurrent,
             "fcount": pageCount,
+            "fordertype": orderType,
+            "forderdir": orderDir[orderType]
         },
         dataType: "text",
         success: function(rawData, textStatus) {
@@ -20,9 +24,10 @@ function loadClient() {
             var st = new SmartTable();
             st.setPage(data.pages, data.current);
             st.setEdit();
-            st.setHeader([document.title, "淘宝名", "手机", "座机", "地址", "邮编"]);
+            st.setHeader(["编号", document.title, "淘宝名", "手机", "座机", "地址", "邮编"]);
+            st.setOrder(orderDir);
             $.each(data.client, function(i, item) {
-                st.addRow(item.id, [item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
+                st.addRow(item.id, [item.id, item.name, item.taobao, item.tel, item.tel2, item.addr, item.code]);
             });
 
             var html = "<div><form id='editform'" +
@@ -37,6 +42,12 @@ function loadClient() {
                 "<div><input type='submit' /><input type='reset' /></div>" +
                 "</form></div>" + st.getTable();
             $("#main").html(html);
+
+            $(".order").click(function() {
+                orderType = $(this).parent().parent().find("th").index($(this).parent()[0]);
+                orderDir[orderType] = (orderDir[orderType] === 0 ? 1 : 0);
+                loadClient();
+            });
 
             $(".page").click(function() {
                 pageCurrent = onPage($(this).text(), data.pages);
@@ -54,12 +65,12 @@ function loadClient() {
                 var $tr = $(this).parent().parent();
                 var fid = $tr.attr("value");
                 var $td = $tr.children("td");
-                var fname = $td.eq(0).text();
-                var ftaobao = $td.eq(1).text();
-                var ftel = $td.eq(2).text();
-                var ftel2 = $td.eq(3).text();
-                var faddr = $td.eq(4).text();
-                var fcode = $td.eq(5).text();
+                var fname = $td.eq(1).text();
+                var ftaobao = $td.eq(2).text();
+                var ftel = $td.eq(3).text();
+                var ftel2 = $td.eq(4).text();
+                var faddr = $td.eq(5).text();
+                var fcode = $td.eq(6).text();
                 $("#faction").attr("value", "update");
                 $("#fid").attr("value", fid);
                 $("#fname").val(fname);
