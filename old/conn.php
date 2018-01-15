@@ -8,6 +8,8 @@
     }
     $conn = mysql_connect("localhost", "root", "admin");
 	mysql_select_db("dxx", $conn);
+    mysql_query("set character set 'utf8'");
+    
     function addHistory($action, $table, $contents)
     {
 

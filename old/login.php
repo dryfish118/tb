@@ -15,31 +15,30 @@
 	}
 	if ($fname != "")
 	{
-		$conn = new mysqli("localhost", "root", "admin", "dxx");
-		if ($conn->connect_error)
+		date_default_timezone_set('PRC');
+		$conn = mysql_connect("localhost", "root", "admin");
+		mysql_select_db("dxx", $conn);
+		mysql_query("set character set 'utf8'");
+
+		$sql = "select * from user where user_name like '$fname'";
+		$rs = mysql_query($sql, $conn);
+		if ($rs)
 		{
-			die($conn->connect_error);
-		}
-		$sql = "select * from user where user_name like '" . $fname . "'";
-		$rs = $conn->query($sql);
-		if ($rs->num_rows > 0)
-		{
-			$row = $rs->fetch_assoc();
+			$row = mysql_fetch_assoc($rs);
 			if ($row)
 			{
-				setcookie("user", $row["user_id"], time() + 60 * 60 * 24 * 365);
+				setcookie("user", $row["user_id"]);
 				echo "<script type=\"text/javascript\">document.location.href=\"./dxx.php\";</script>";
 			}
 			else
 			{
-				die($conn->connect_error);
+				echo "failed to mysql_fetch_assoc.  " . $sql;
 			}
 		}
 		else
 		{
 			echo("failed to login.   " . $sql);
 		}
-		$conn->close();
 	}
 ?>
 </head>
