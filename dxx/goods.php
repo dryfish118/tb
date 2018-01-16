@@ -21,7 +21,7 @@ switch ($faction) {
     case "list" : {
         $pages = 0;
         if ($fcount > 0 && $fcurrent > 0) {
-            $sql = "select count(*) as t from client";
+            $sql = "select count(*) as t from goods";
             $rs = $conn->query($sql);
             if ($rs) {
                 $row= $rs->fetch_assoc();
@@ -37,21 +37,23 @@ switch ($faction) {
                 }
             }
         }
-        $sql = "select * from client order by ";
+        $sql = "select goods_id, goods_brand_id, brand_name, cat1_name, " . 
+            "goods_cat2_id, cat2_name, goods_type, goods_price, goods_remark " .
+            "from (cat1 inner join cat2 on cat1.cat1_id = cat2.cat2_cat1_id) " .
+            "inner join (brand inner join goods on brand.brand_id = goods.goods_brand_id) " .
+            "on cat2.cat2_id = goods.goods_cat2_id order by ";
         if ($fordertype == 1) {
-            $sql .= "client_name";
+            $sql .= "brand_name";
         } else if ($fordertype == 2) {
-            $sql .= "client_taobao";
+            $sql .= "cat1_name";
         } else if ($fordertype == 3) {
-            $sql .= "client_tel";
+            $sql .= "cat2_name";
         } else if ($fordertype == 4) {
-            $sql .= "client_tel2";
+            $sql .= "goods_type";
         } else if ($fordertype == 5) {
-            $sql .= "client_addr";
-        } else if ($fordertype == 6) {
-            $sql .= "client_code";
+            $sql .= "goods_price";
         } else {
-            $sql .= "client_id";
+            $sql .= "goods_id";
         }
         if ($forderdir != 0) {
             $sql .= " desc";
@@ -62,19 +64,21 @@ switch ($faction) {
         $rs = $conn->query($sql);
         if ($rs) {
             $count = 0;
-            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"client\":[";
+            $json = "{\"current\":\"$fcurrent\",\"pages\":\"$pages\",\"goods\":[";
             while ($row = $rs->fetch_assoc()) {
                 if ($count) {
                     $json .= ",";
                 }
                 $count++;
-				$json .= "{\"id\":" . $row["client_id"] . 
-					",\"name\":\"" . trimReturn($row["client_name"]) . 
-					"\",\"taobao\":\"" . trimReturn($row["client_taobao"]) . 
-					"\",\"tel\":\"" . trimReturn($row["client_tel"]) . 
-					"\",\"tel2\":\"" . trimReturn($row["client_tel2"]) . 
-					"\",\"addr\":\"" . trimReturn($row["client_addr"]) . 
-					"\",\"code\":\"" . trimReturn($row["client_code"]) . "\"}";
+				$json .= "{\"id\":" . $row["goods_id"] . 
+					",\"brandid\":" . $row["goods_brand_id"] . 
+					",\"brand\":\"" . $row["brand_name"] . 
+					"\",\"cat1\":\"" . $row["cat1_name"] . 
+					"\",\"cat2id\":" . $row["goods_cat2_id"] . 
+					",\"cat2\":\"" . $row["cat2_name"] . 
+					"\",\"type\":\"" . $row["goods_type"] . 
+					"\",\"price\":" . $row["goods_price"] . 
+					",\"remark\":\"" . trimReturn($row["goods_remark"]) . "\"}";
             }
             $json .= "]}";
             $rs->free();

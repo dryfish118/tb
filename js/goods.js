@@ -33,13 +33,13 @@ function loadGoods() {
             var html = "<div><form id='editform'>" +
                 "<input type='hidden' id='faction' value='add' />" +
                 "<input type='hidden' id='fid' value='0' />" +
-                "<label>品牌</label><input type='text' id='fbrand' />" +
-                "<label>大类</label><input type='text' id='fcat1' />" +
-                "<label>小类</label><input type='text' id='fcat2' />" +
-                "<label>型号</label><input type='text' id='ftype' />" +
-                "<label>单价</label><input type='text' id='fprice' />" +
-                "<label>说明</label><input type='text' id='fremark' />" +
-                "<input type='submit' /><input type='reset' />" +
+                "<div><label>品牌</label><input type='text' id='fbrand' /></div>" +
+                "<div><label>大类</label><input type='text' id='fcat1' /></div>" +
+                "<div><label>小类</label><input type='text' id='fcat2' /></div>" +
+                "<div><label>型号</label><input type='text' id='ftype' /></div>" +
+                "<div><label>单价</label><input type='text' id='fprice' /></div>" +
+                "<div><label>说明</label><input type='text' id='fremark' /></div>" +
+                "<div><input type='submit' /><input type='reset' /></div>" +
                 "</form></div>" + st.getTable();
             $("#main").html(html);
 
